@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +30,7 @@ class BackendEndpointIT {
     private final HttpClient client = HttpClient.newHttpClient();
     private static HttpServer providerStub;
     private static ExecutorService providerExecutor;
+    private static final AtomicInteger PROVIDER_REQUEST_COUNT = new AtomicInteger();
 
     @BeforeAll
     static void startProviderStub() throws IOException {
@@ -63,20 +65,24 @@ class BackendEndpointIT {
 
     @Test
     void translateEndpointWithoutCredentialsIsRejected() throws IOException, InterruptedException {
+        int requestsBefore = PROVIDER_REQUEST_COUNT.get();
         HttpResponse<String> response = postJsonWithoutCredentials(
                 "{\"text\":\"Hello\",\"sourceLanguage\":\"English\"}");
 
         assertUnauthorizedWithBasicChallenge(response);
+        assertProviderWasNotCalled(requestsBefore);
     }
 
     @Test
     void translateEndpointWithIncorrectCredentialsIsRejected() throws IOException, InterruptedException {
+        int requestsBefore = PROVIDER_REQUEST_COUNT.get();
         HttpResponse<String> response = postJson(
                 "{\"text\":\"Hello\",\"sourceLanguage\":\"English\"}",
                 TEST_USERNAME,
                 "incorrect-password");
 
         assertUnauthorizedWithBasicChallenge(response);
+        assertProviderWasNotCalled(requestsBefore);
     }
 
     @Test
@@ -126,20 +132,24 @@ class BackendEndpointIT {
 
     @Test
     void authenticatedTranslateEndpointRejectsBlankText() throws IOException, InterruptedException {
+        int requestsBefore = PROVIDER_REQUEST_COUNT.get();
         HttpResponse<String> response = postJsonWithCorrectCredentials(
                 "{\"text\":\"   \",\"sourceLanguage\":\"English\"}");
 
         assertEquals(400, response.statusCode());
         assertTrue(response.body().contains("\"error\":\"VALIDATION_ERROR\""));
+        assertProviderWasNotCalled(requestsBefore);
     }
 
     @Test
     void authenticatedTranslateEndpointRejectsMissingText() throws IOException, InterruptedException {
+        int requestsBefore = PROVIDER_REQUEST_COUNT.get();
         HttpResponse<String> response = postJsonWithCorrectCredentials(
                 "{\"sourceLanguage\":\"English\"}");
 
         assertEquals(400, response.statusCode());
         assertTrue(response.body().contains("must not be blank"));
+        assertProviderWasNotCalled(requestsBefore);
     }
 
     private HttpResponse<String> postJsonWithCorrectCredentials(String body)
@@ -179,11 +189,17 @@ class BackendEndpointIT {
                 () -> "Expected the Darija Translator realm but received: " + challenge);
     }
 
+    private static void assertProviderWasNotCalled(int requestsBefore) {
+        assertEquals(requestsBefore, PROVIDER_REQUEST_COUNT.get(),
+                "Rejected backend requests must not reach the translation provider.");
+    }
+
     private HttpResponse<String> send(HttpRequest request) throws IOException, InterruptedException {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     private static void handleProviderRequest(HttpExchange exchange) throws IOException {
+        PROVIDER_REQUEST_COUNT.incrementAndGet();
         try {
             String apiKey = exchange.getRequestHeaders().getFirst("x-goog-api-key");
             String requestBody = new String(

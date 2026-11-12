@@ -8,7 +8,7 @@ The Gemini API key exists only in the backend process. No client accepts or stor
 
 Open Liberty exposes public `GET /api/health` and Basic-authenticated `POST /api/translate`. `GeminiTranslationClient` uses Java 17's built-in `java.net.http.HttpClient`; no provider SDK was added. The prompt treats input as untrusted material to translate and asks for Arabic-script Darija only.
 
-The default model is `gemini-3.1-flash-lite`, because Google's official pricing page currently describes it as optimized for translation/simple processing and lists free-tier input and output. Model access and quota depend on the Google AI Studio project, so `GEMINI_MODEL` is configurable. Confirm the model available to your own project in AI Studio before the live demo.
+The default model is `gemini-3.5-flash-lite`, because Google's official pricing page currently describes it as optimized for translation/simple processing and lists free-tier input and output. Model access and quota depend on the Google AI Studio project, so `GEMINI_MODEL` is configurable. Confirm the model available to your own project in AI Studio before the live demo.
 
 Official references:
 
@@ -45,7 +45,7 @@ Request shape (preserved from the starter project):
   "translation": "سلام، كيداير؟",
   "sourceLanguage": "English",
   "targetLanguage": "Moroccan Darija (Arabic script)",
-  "model": "gemini-3.1-flash-lite"
+  "model": "gemini-3.5-flash-lite"
 }
 ```
 
@@ -90,14 +90,14 @@ $keyStoreSecret = Read-Host 'Liberty keystore password' -AsSecureString
 $env:keystore_password = [System.Net.NetworkCredential]::new('', $keyStoreSecret).Password
 $geminiSecret = Read-Host 'Gemini API key' -AsSecureString
 $env:GEMINI_API_KEY = [System.Net.NetworkCredential]::new('', $geminiSecret).Password
-$env:GEMINI_MODEL = 'gemini-3.1-flash-lite'
+$env:GEMINI_MODEL = 'gemini-3.5-flash-lite'
 ```
 
 Alternatively, copy `backend\src\main\liberty\config\server.env.example` to the ignored `server.env` and replace its placeholders. Never commit `server.env`, a real `.env`, keystores, screenshots containing keys, or terminal output that exposes a key.
 
 Optional backend settings:
 
-- `GEMINI_MODEL` (default `gemini-3.1-flash-lite`)
+- `GEMINI_MODEL` (default `gemini-3.5-flash-lite`)
 - `GEMINI_API_BASE_URL` (default official `v1beta` base; overridden only by offline tests)
 - `GEMINI_TIMEOUT_SECONDS` (default 20; valid 1–300)
 
@@ -127,7 +127,7 @@ $requestSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureSt
 $env:TRANSLATOR_DEMO_PASSWORD = [System.Net.NetworkCredential]::new('', $requestSecret).Password
 $pair = "$($env:TRANSLATOR_DEMO_USERNAME):$($env:TRANSLATOR_DEMO_PASSWORD)"
 $basic = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($pair))
-$body = @{ text = 'Welcome to Morocco'; sourceLanguage = 'English' } | ConvertTo-Json -Compress
+$body = @{ text = 'I left my phone at home. Can you call me after class?'; sourceLanguage = 'English' } | ConvertTo-Json -Compress
 $result = Invoke-RestMethod 'http://localhost:9080/api/translate' -Method Post `
   -Headers @{ Authorization = "Basic $basic" } -ContentType 'application/json' -Body $body
 $result.translation

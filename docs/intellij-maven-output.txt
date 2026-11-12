@@ -20,3 +20,17 @@ Relevant IntelliJ Maven output:
 The integration server used backend/src/test/liberty/config/server.env.test,
 which points GeminiTranslationClient to the local HTTP stub on port 19090.
 No real Gemini API key or provider request was used in this verification.
+
+Stage 2 rerun after provider-boundary assertions
+------------------------------------------------
+
+Run in IntelliJ's integrated terminal on 2026-11-12 at 14:43:21 WEST.
+
+  [INFO] Compiling 10 source files with javac [debug release 17]
+  [INFO] Running ma.ac.university.darijatranslator.api.BackendEndpointIT
+  [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.677 s
+  [INFO] BUILD SUCCESS
+  [INFO] Total time:  12.652 s
+
+This run includes explicit provider-call-count assertions proving that rejected
+401 and 400 requests do not reach the local Gemini stub.

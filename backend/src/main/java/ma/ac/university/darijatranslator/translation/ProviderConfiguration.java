@@ -17,7 +17,7 @@ public record ProviderConfiguration(
     public static final String API_BASE_URL_ENV = "GEMINI_API_BASE_URL";
     public static final String TIMEOUT_SECONDS_ENV = "GEMINI_TIMEOUT_SECONDS";
 
-    public static final String DEFAULT_MODEL = "gemini-3.1-flash-lite";
+    public static final String DEFAULT_MODEL = "gemini-3.5-flash-lite";
     public static final String DEFAULT_API_BASE_URL =
             "https://generativelanguage.googleapis.com/v1beta";
     public static final int DEFAULT_TIMEOUT_SECONDS = 20;
