@@ -29,7 +29,7 @@ Have the backend already running, Chrome open on a sample page, a PowerShell win
 
 ## 3:00–3:50 — Chrome side panel
 
-- On a webpage, highlight a sentence and right-click **Translate selection to Darija**.
+- On a webpage, highlight a sentence and right-click **Translate to Darija**.
 - Show that the side panel opens alongside the page, the selection appears automatically, and loading changes to the translation.
 - Briefly show `manifest.json` (`manifest_version: 3`, context menu, side panel, storage) and `service-worker.js` selection transfer.
 

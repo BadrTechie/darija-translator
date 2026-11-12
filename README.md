@@ -174,15 +174,28 @@ Open `http://127.0.0.1:8081`. Enter the backend username and password in the for
 
 If `php` is not recognized, download the current **x64 Non Thread Safe ZIP** from [PHP for Windows](https://www.php.net/downloads.php?os=windows), install the linked **Visual C++ Redistributable for Visual Studio 2015–2022**, extract the ZIP to `C:\php`, then open a fresh PowerShell window and run `$env:Path = "C:\php;$env:Path"`. No database, web-server package, Composer install, or PHP extension is needed; `allow_url_fopen` is enabled explicitly by the commands above.
 
+User-verified live result on Windows (2026-11-12): submitting `How much is a train ticket to Rabat?` at `http://127.0.0.1:8081` returned a readable Arabic translation, and the password field was empty after the response.
+
 ## Client 3: Chrome Manifest V3 side panel
 
-1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
-2. Select `clients\chrome-extension`.
-3. Open any ordinary webpage, highlight text, right-click, and choose **Translate selection to Darija**.
-4. The side panel opens beside the page, transfers the selection, and translates automatically after settings exist.
-5. On first use, expand **Backend settings**, enter `http://localhost:9080` plus the Basic-auth username/password, and save. Repeat the selection action.
+Requires Chrome 116 or newer. Run the dependency-free checks with:
 
-The extension stores demo Basic credentials in Chrome extension local storage. Do not use valuable/reused credentials. The Gemini key is never present in the extension.
+```powershell
+Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\chrome-extension'
+node --check .\service-worker.js
+node --check .\sidepanel.js
+node --test .\test-extension.mjs
+```
+
+For one live browser test:
+
+1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**. Select exactly `C:\Users\lcbad\Downloads\darija-translator\clients\chrome-extension`. If it was already loaded, click its **Reload** button.
+2. Open an ordinary `http://` or `https://` webpage—not a `chrome://` page. Highlight one complete sentence, right-click it, and choose **Translate to Darija**.
+3. Confirm that Chrome opens the extension side panel beside that tab and that **Selected text** exactly matches the highlighted sentence.
+4. On first use, expand **Backend settings**, enter `http://localhost:9080` and the backend Basic-auth username/password, then click **Save settings**. The retained selection translates automatically; confirm the result is readable Arabic displayed right to left.
+5. On the same webpage, highlight a different sentence and choose **Translate to Darija** again. Confirm that the already-open panel replaces both the selected text and translation with the second result.
+
+The extension retains the backend URL and username in extension-local storage. The password is kept only in Chrome's in-memory extension session storage and is cleared when the browser restarts or the extension reloads. Use demo credentials rather than a valuable/reused password. The Gemini key is never present in the extension.
 
 ## Client 4: React Native (Expo)
 

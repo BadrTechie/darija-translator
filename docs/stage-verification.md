@@ -33,13 +33,24 @@
 - Subprocess coverage passed for Arabic success, HTTP 401 credentials, HTTP 400 input, HTTP 502 provider failure, blank local input, and unreachable backend; a focused test confirms the private `getpass` prompt.
 - User-verified live on Windows: `Where can I buy a train ticket to Casablanca?` was translated through the running backend as `فين نقدر نشري تيكي ديال القطر ل كازا؟`.
 
-## 4. PHP form — IMPLEMENTED; LOCAL RUNTIME UNAVAILABLE
+## 4. PHP form — PASSED (USER-VERIFIED)
 
 - The form accepts text, source language, backend username, and a password input that is never repopulated or rendered.
 - PHP sends JSON to `POST /api/translate` with Basic authentication and renders only an escaped, non-empty `translation` value using `lang="ar"` and `dir="rtl"`.
 - Dedicated messages cover rejected credentials, invalid input, provider failures, malformed/empty success responses, and an unreachable backend.
-- PHP, Winget, Chocolatey, and Scoop were unavailable on this Windows environment. Docker CLI existed but its engine was not running, so no lint, local PHP server, or browser submission was claimed.
-- The README gives the minimal official PHP ZIP/Visual C++ runtime setup and exact lint/server commands. The authenticated browser check remains user-run because it needs the private backend password.
+- PHP, Winget, Chocolatey, and Scoop were unavailable to the automated environment. Docker CLI existed but its engine was not running, so no agent-run lint or local PHP server was claimed.
+- The README gives the minimal official PHP ZIP/Visual C++ runtime setup and exact lint/server commands.
+- User-verified live on Windows: submitting `How much is a train ticket to Rabat?` through the local form returned readable Arabic, and the rendered password field was empty afterward.
+
+## 5. Chrome Manifest V3 side panel — AUTOMATED CHECKS PASSED; LIVE UI PENDING
+
+- Chrome 116+ MV3 manifest declares context-menu, side-panel, storage, and HTTP(S) host access.
+- The context-menu action stores the exact selection in extension session storage and opens the side panel for the originating tab.
+- A missing-credentials flow keeps the selection visible; saving the URL and Basic credentials automatically resumes translation.
+- New selections replace the panel text, abort any older in-flight request, and render only the newest Darija result with `lang="ar"` and `dir="rtl"`.
+- Backend URL/username persist locally; the password exists only in in-memory extension session storage. The Gemini key remains backend-only.
+- `node --check` passed for both JavaScript entry points. `node --test test-extension.mjs` passed 3/3 interaction tests.
+- Installed Chrome 157 exceeds the declared Chrome 116 minimum. Loading the unpacked extension, side-panel appearance, and one authenticated live translation remain user verification steps because they require changing the user's browser and entering the private backend password.
 
 ## Dev/test Liberty configuration isolation — PASSED
 
