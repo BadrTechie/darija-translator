@@ -105,11 +105,13 @@ Optional backend settings:
 
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\backend'
-.\mvnw.cmd clean verify
+.\mvnw.cmd clean verify -Pintegration-tests
 .\mvnw.cmd liberty:dev
 ```
 
-`clean verify` starts Open Liberty, runs the authenticated endpoint suite against a local Gemini-shaped HTTP stub, checks success, 400, 401, provider 429/rejection, empty response, and timeout, then stops Liberty. It needs no real API key and no provider network access after dependencies are cached.
+`clean verify -Pintegration-tests` activates the isolated integration-test server, runs the authenticated endpoint suite against a local Gemini-shaped HTTP stub, checks success, 400, 401, provider 429/rejection, empty response, and timeout, then stops Liberty. The profile uses `darijaTranslatorIntegrationServer` and its test-only `server.env.test`. Plain `liberty:dev` uses the separate `darijaTranslatorDevServer`, inherits your PowerShell environment, and never loads the test stub configuration. Tests need no real API key and no provider network access after dependencies are cached.
+
+Do not add `-Pintegration-tests` to the dev command. After tests, restart normally with `.\mvnw.cmd liberty:dev` in the same PowerShell window where you set the real demo credentials and `GEMINI_API_KEY`.
 
 Keep that first terminal open. In a second PowerShell window, verify health:
 

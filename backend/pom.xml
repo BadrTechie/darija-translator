@@ -53,46 +53,63 @@
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>3.11.5</version>
                 <configuration>
-                    <serverName>darijaTranslatorServer</serverName>
+                    <serverName>darijaTranslatorDevServer</serverName>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>prepare-integration-server</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <serverEnvFile>
-                                ${project.basedir}/src/test/liberty/config/server.env.test
-                            </serverEnvFile>
-                        </configuration>
-                        <goals>
-                            <goal>create</goal>
-                            <goal>install-feature</goal>
-                            <goal>deploy</goal>
-                            <goal>test-start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-integration-server</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>test-stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.openliberty.tools</groupId>
+                        <artifactId>liberty-maven-plugin</artifactId>
+                        <configuration>
+                            <serverName>darijaTranslatorIntegrationServer</serverName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>prepare-integration-server</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <serverEnvFile>
+                                        ${project.basedir}/src/test/liberty/config/server.env.test
+                                    </serverEnvFile>
+                                </configuration>
+                                <goals>
+                                    <goal>create</goal>
+                                    <goal>install-feature</goal>
+                                    <goal>deploy</goal>
+                                    <goal>test-start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-integration-server</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>test-stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

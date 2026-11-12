@@ -31,3 +31,13 @@
 - Windows UTF-8 output displays the response `translation` as readable Arabic.
 - Normal entry point exercised against a local authenticated HTTP stub because Liberty was not running.
 - Subprocess coverage passed for Arabic success, HTTP 401 credentials, HTTP 400 input, HTTP 502 provider failure, blank local input, and unreachable backend; a focused test confirms the private `getpass` prompt.
+
+## Dev/test Liberty configuration isolation — PASSED
+
+- Root cause: dev mode and integration tests shared `darijaTranslatorServer`; the integration execution copied `server.env.test` into that persistent server directory, so later dev starts reused test credentials and the stub URL.
+- The `integration-tests` Maven profile now owns the test lifecycle, test `server.env`, and `darijaTranslatorIntegrationServer`.
+- Plain `liberty:dev` uses the separate `darijaTranslatorDevServer` and inherits normal credentials/provider settings from its PowerShell process.
+- Test result: `BUILD SUCCESS`; 9 tests, 0 failures/errors/skips on the isolated integration server.
+- Post-test dev verification: `darijaTranslatorDevServer` started, public health returned `UP`, and its generated env file contained no translator credentials, Gemini key/model, or stub URL.
+- Stale legacy and temporary verification `server.env` files under `target` were removed. The verification dev server was stopped and port 9080 was confirmed free.
+- A sandbox-only dev attempt failed before startup because that account could not access Maven Central; the cached host-context dev run succeeded and is the configuration evidence.

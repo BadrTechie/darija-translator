@@ -17,7 +17,7 @@ Have the backend already running, Chrome open on a sample page, a PowerShell win
 
 ## 1:35–2:15 — Offline automated verification
 
-- Run `backend\.\mvnw.cmd clean verify` beforehand or show its final `BUILD SUCCESS`.
+- Run `backend\.\mvnw.cmd clean verify -Pintegration-tests` beforehand or show its final `BUILD SUCCESS`.
 - Open `BackendEndpointIT`: show the local Gemini-shaped stub and tests for success, provider rejection, empty response, timeout, 400, and 401.
 - Run `Invoke-RestMethod http://localhost:9080/api/health` to show the public endpoint.
 

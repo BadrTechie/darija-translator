@@ -34,3 +34,21 @@ Run in IntelliJ's integrated terminal on 2026-11-12 at 14:43:21 WEST.
 
 This run includes explicit provider-call-count assertions proving that rejected
 401 and 400 requests do not reach the local Gemini stub.
+
+Isolated integration profile verification
+-----------------------------------------
+
+Run after separating development and integration-test Liberty servers:
+
+  .\mvnw.cmd verify -Pintegration-tests
+
+  [INFO] Using serverName : darijaTranslatorIntegrationServer.
+  [INFO] Running ma.ac.university.darijatranslator.api.BackendEndpointIT
+  [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.662 s
+  [INFO] Server darijaTranslatorIntegrationServer stopped.
+  [INFO] BUILD SUCCESS
+  [INFO] Total time:  11.428 s
+
+Plain `liberty:dev` subsequently used `darijaTranslatorDevServer`; health was
+UP and no test credentials, Gemini test key/model, or stub URL were installed
+in that server. The verification server was then stopped.
