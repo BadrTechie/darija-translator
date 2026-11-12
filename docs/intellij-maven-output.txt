@@ -1,0 +1,22 @@
+IntelliJ IDEA Maven verification evidence
+=========================================
+
+Run in IntelliJ's integrated terminal on 2026-11-12 at 14:33:50 WEST.
+
+Command:
+  $env:JAVA_HOME='C:\Users\lcbad\.jdks\temurin-17.0.20.1'
+  Set-Location backend
+  .\mvnw.cmd verify
+
+Relevant IntelliJ Maven output:
+  [INFO] Running ma.ac.university.darijatranslator.api.BackendEndpointIT
+  [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.676 s
+  [INFO] Server darijaTranslatorServer stopped.
+  [INFO] --- failsafe:3.5.4:verify (default) @ darija-translator-backend ---
+  [INFO] BUILD SUCCESS
+  [INFO] Total time:  10.771 s
+  [INFO] Finished at: 2026-11-12T14:33:50+01:00
+
+The integration server used backend/src/test/liberty/config/server.env.test,
+which points GeminiTranslationClient to the local HTTP stub on port 19090.
+No real Gemini API key or provider request was used in this verification.

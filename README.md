@@ -204,6 +204,7 @@ The app exposes editable backend URL and demo credential fields, with visible lo
 - [UML deployment diagram source](docs/uml/deployment-diagram.puml) and [viewable SVG](docs/uml/deployment-diagram.svg)
 - [Timed five-minute demo script](docs/demo-script.md)
 - [Verification record](docs/verification.md)
+- [IntelliJ Maven output evidence](docs/intellij-maven-output.txt)
 
 ## Submission archive
 

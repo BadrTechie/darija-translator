@@ -5,7 +5,7 @@ Date: 2026-11-12 (Africa/Casablanca)
 | Deliverable | Check | Result |
 |---|---|---|
 | Backend Java 17 source | `mvnw.cmd clean test` using Temurin 17 | Passed |
-| Backend offline provider integration | `mvnw.cmd clean verify` with local HTTP stub | Passed: BUILD SUCCESS; 9 tests, 0 failures/errors |
+| Backend offline provider integration | IntelliJ integrated terminal: `mvnw.cmd verify` with local HTTP stub and Temurin 17 | Passed: BUILD SUCCESS; 9 tests, 0 failures/errors; 10.771 s |
 | Python CLI normal entry point | Subprocess tests against authenticated local stub | Passed (2 tests) |
 | PHP form | `php -l index.php` and browser form | Blocked: PHP executable is not installed on this machine |
 | Chrome Manifest V3 | JSON parse and `node --check` on both scripts | Passed static checks; unpacked Chrome UI requires manual run |
