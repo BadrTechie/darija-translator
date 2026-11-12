@@ -197,6 +197,8 @@ For one live browser test:
 
 The extension retains the backend URL and username in extension-local storage. The password is kept only in Chrome's in-memory extension session storage and is cleared when the browser restarts or the extension reloads. Use demo credentials rather than a valuable/reused password. The Gemini key is never present in the extension.
 
+The request uses an explicit Basic `Authorization` header with browser-managed credentials disabled. If the backend returns 401/403, the panel stops loading, keeps the selected text, clears only the session password, reopens **Backend settings**, and waits for you to correct the password and click **Save settings** again. It does not invoke Chrome's native HTTP sign-in flow or retry automatically. For safe diagnostics, the side-panel console records only request ID, URL, method, response status, and whether the header is present—never its value.
+
 ## Client 4: React Native (Expo)
 
 ```powershell

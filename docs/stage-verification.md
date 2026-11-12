@@ -51,6 +51,8 @@
 - Backend URL/username persist locally; the password exists only in in-memory extension session storage. The Gemini key remains backend-only.
 - `node --check` passed for both JavaScript entry points. `node --test test-extension.mjs` passed 3/3 interaction tests.
 - Installed Chrome 157 exceeds the declared Chrome 116 minimum. Loading the unpacked extension, side-panel appearance, and one authenticated live translation remain user verification steps because they require changing the user's browser and entering the private backend password.
+- Live-debug fix: the fetch now uses `credentials: "omit"` while retaining its explicit Basic header, preventing Chrome from owning the backend's 401 challenge. An isolated Chrome 157 probe sent one POST with the header present and returned one 401 to JavaScript; no header value was recorded.
+- The panel test verifies one request per Save, URL `http://localhost:9080/api/translate`, POST method, explicit-header presence, 401 loading completion, retained selection, cleared session password, reopened settings, and no automatic retry. Correcting the password and saving starts exactly one new request.
 
 ## Dev/test Liberty configuration isolation — PASSED
 

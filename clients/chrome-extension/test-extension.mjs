@@ -120,7 +120,7 @@ test('context menu stores the exact selection and opens the tab side panel', asy
   assert.equal(session.pendingSelection.tabId, 42);
 });
 
-test('panel preserves selection for credentials and refreshes a second selection', async () => {
+test('panel stops after one challenged 401, accepts corrected credentials, and refreshes selection', async () => {
   const ids = [
     'backendUrl', 'username', 'password', 'sourceLanguage', 'text',
     'translate', 'save', 'status', 'result', 'settings',
@@ -134,7 +134,12 @@ test('panel preserves selection for credentials and refreshes a second selection
   };
   const storageChanged = event();
   const requests = [];
-  const translations = ['الترجمة اللولة', 'الترجمة الثانية'];
+  const traces = [];
+  const responses = [
+    { ok: false, status: 401, data: {} },
+    { ok: true, status: 200, data: { translation: 'الترجمة اللولة' } },
+    { ok: true, status: 200, data: { translation: 'الترجمة الثانية' } },
+  ];
 
   const chrome = {
     storage: {
@@ -149,12 +154,13 @@ test('panel preserves selection for credentials and refreshes a second selection
     },
   };
   const fetch = async (url, options) => {
+    const response = responses[requests.length];
     requests.push({ url, options });
     return {
-      ok: true,
-      status: 200,
+      ok: response.ok,
+      status: response.status,
       async json() {
-        return { translation: translations[requests.length - 1] };
+        return response.data;
       },
     };
   };
@@ -164,6 +170,11 @@ test('panel preserves selection for credentials and refreshes a second selection
     URL,
     btoa,
     chrome,
+    console: {
+      debug(label, details) {
+        traces.push({ label, ...details });
+      },
+    },
     document,
     encodeURIComponent,
     fetch,
@@ -184,11 +195,31 @@ test('panel preserves selection for credentials and refreshes a second selection
 
   assert.equal(requests.length, 1);
   assert.equal(requests[0].url, 'http://localhost:9080/api/translate');
+  assert.equal(requests[0].options.method, 'POST');
+  assert.equal(requests[0].options.credentials, 'omit');
   assert.equal(JSON.parse(requests[0].options.body).text, 'First exact selection.');
-  assert.match(requests[0].options.headers.Authorization, /^Basic /);
+  assert.equal(Object.hasOwn(requests[0].options.headers, 'Authorization'), true);
+  assert.equal(traces[0].url, 'http://localhost:9080/api/translate');
+  assert.equal(traces[0].method, 'POST');
+  assert.equal(traces[0].authorizationHeaderPresent, true);
+  assert.equal(traces[1].status, 401);
+  assert.equal(elements.text.value, 'First exact selection.');
+  assert.equal(elements.result.textContent, '');
+  assert.equal(elements.settings.open, true);
+  assert.equal(elements.password.value, '');
+  assert.equal(elements.translate.disabled, false);
+  assert.equal(sessionData.password, undefined);
+  assert.equal(elements.status.textContent, 'The backend rejected those credentials. Check the username and password.');
+  await flush();
+  assert.equal(requests.length, 1);
+
+  elements.password.value = 'corrected-private-test-password';
+  await elements.save.listeners.click();
+
+  assert.equal(requests.length, 2);
   assert.equal(elements.result.textContent, 'الترجمة اللولة');
   assert.equal(localData.password, undefined);
-  assert.equal(sessionData.password, 'private-test-password');
+  assert.equal(sessionData.password, 'corrected-private-test-password');
 
   await storageChanged.listeners[0]({
     pendingSelection: {
@@ -197,8 +228,8 @@ test('panel preserves selection for credentials and refreshes a second selection
   }, 'session');
 
   assert.equal(elements.text.value, 'Second exact selection.');
-  assert.equal(requests.length, 2);
-  assert.equal(JSON.parse(requests[1].options.body).text, 'Second exact selection.');
+  assert.equal(requests.length, 3);
+  assert.equal(JSON.parse(requests[2].options.body).text, 'Second exact selection.');
   assert.equal(elements.result.textContent, 'الترجمة الثانية');
   assert.equal(elements.status.textContent, 'Translation complete.');
 });

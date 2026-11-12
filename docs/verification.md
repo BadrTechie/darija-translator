@@ -8,7 +8,7 @@ Date: 2026-11-12 (Africa/Casablanca)
 | Backend offline provider integration | IntelliJ integrated terminal: `mvnw.cmd verify -Pintegration-tests` with local HTTP stub and Temurin 17 | Passed: BUILD SUCCESS; 9 tests, 0 failures/errors; isolated integration server |
 | Python CLI normal entry point | Seven automated client tests plus user-run authenticated backend translation | Passed; live result: `فين نقدر نشري تيكي ديال القطر ل كازا؟` |
 | PHP form | Source/security review plus user-run authenticated browser form | Passed live; readable Arabic returned and password field cleared |
-| Chrome Manifest V3 | `node --check` on both scripts and `node --test test-extension.mjs` | Passed: 3 interaction tests; unpacked Chrome UI remains user-run |
+| Chrome Manifest V3 | Syntax checks, 3 interaction tests, and isolated Chrome 157 challenged-fetch probe | Passed: one explicit-header POST per Save; 401 stops without automatic retry; live unpacked retest remains user-run |
 | React Native API layer | `node --test test/api.test.js` | Passed (2 tests) |
 | React Native Expo UI | `npm install` and emulator/device | Blocked: `npm install` produced no output/files after several minutes both sandboxed and with network permission; stopped. Run it on the laptop, then `npm run android` |
 | Real Gemini translation | Authenticated backend through normal clients | User-verified live through both the Python CLI and PHP form; no key was exposed |

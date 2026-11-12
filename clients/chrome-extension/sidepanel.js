@@ -68,8 +68,19 @@ async function translate() {
   elements.result.textContent = '';
   setStatus('Translating...', false);
   try {
-    const response = await fetch(`${backendUrl.replace(/\/+$/, '')}/api/translate`, {
-      method: 'POST',
+    const requestUrl = `${backendUrl.replace(/\/+$/, '')}/api/translate`;
+    const method = 'POST';
+    console.debug('Darija translation request', {
+      requestId,
+      url: requestUrl,
+      method,
+      authorizationHeaderPresent: true,
+    });
+    const response = await fetch(requestUrl, {
+      method,
+      // Use only the explicit header below. This prevents Chrome from handling
+      // a 401 challenge with its native sign-in dialog and automatic retries.
+      credentials: 'omit',
       signal: activeRequest.signal,
       headers: {
         Authorization: `Basic ${btoa(unescape(encodeURIComponent(`${username}:${password}`)))}`,
@@ -78,8 +89,16 @@ async function translate() {
       },
       body: JSON.stringify({ text, sourceLanguage: elements.sourceLanguage.value || 'unspecified' }),
     });
+    console.debug('Darija translation response', { requestId, status: response.status });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(responseError(response.status, data));
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        await chrome.storage.session.remove('password');
+        elements.password.value = '';
+        elements.settings.open = true;
+      }
+      throw new Error(responseError(response.status, data));
+    }
     if (typeof data.translation !== 'string' || !data.translation.trim()) {
       throw new Error("Backend response has no non-empty 'translation' field.");
     }
