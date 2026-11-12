@@ -22,3 +22,12 @@
 
 - No usable `GEMINI_API_KEY` was present in the process environment or ignored Liberty `server.env`; demo Basic credentials were also absent.
 - No secret was read or printed. The README contains exact private PowerShell steps and the required sentence for the personal live call.
+
+## 3. Python CLI — PASSED
+
+- Built on the existing standard-library `urllib` client; no pip package or download is required.
+- Normal no-argument use prompts for text, source language, username when needed, and a hidden backend password via `getpass`.
+- Backend URL defaults to `http://localhost:9080` and is configurable with `--backend-url` or `TRANSLATOR_BACKEND_URL`.
+- Windows UTF-8 output displays the response `translation` as readable Arabic.
+- Normal entry point exercised against a local authenticated HTTP stub because Liberty was not running.
+- Subprocess coverage passed for Arabic success, HTTP 401 credentials, HTTP 400 input, HTTP 502 provider failure, blank local input, and unreachable backend; a focused test confirms the private `getpass` prompt.

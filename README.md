@@ -141,15 +141,19 @@ Uses only Python's standard library.
 
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\python'
-$env:TRANSLATOR_BACKEND_URL = 'http://localhost:9080'
 $env:TRANSLATOR_USERNAME = 'local-demo-user'
-$clientSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
-$env:TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $clientSecret).Password
-python .\darija_translate.py 'Hello, how are you?' --source-language English
+Remove-Item Env:TRANSLATOR_PASSWORD -ErrorAction SilentlyContinue
+python .\darija_translate.py
 python -m unittest -v test_cli.py
 ```
 
-Text may also be piped on stdin. Options override the environment; avoid putting a password directly in command history.
+The no-argument command prompts for source text, source language, and the backend password; password entry is hidden with Python's `getpass`. It defaults to `http://localhost:9080`. To use another backend:
+
+```powershell
+python .\darija_translate.py --backend-url 'http://192.168.1.20:9080'
+```
+
+Text may also be passed positionally or piped on stdin. Non-interactive automation may set `TRANSLATOR_PASSWORD`; interactive use should leave it unset so the private prompt is used. The CLI never accepts or reads the Gemini key.
 
 ## Client 2: PHP form
 
