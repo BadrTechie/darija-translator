@@ -31,6 +31,15 @@
 - Windows UTF-8 output displays the response `translation` as readable Arabic.
 - Normal entry point exercised against a local authenticated HTTP stub because Liberty was not running.
 - Subprocess coverage passed for Arabic success, HTTP 401 credentials, HTTP 400 input, HTTP 502 provider failure, blank local input, and unreachable backend; a focused test confirms the private `getpass` prompt.
+- User-verified live on Windows: `Where can I buy a train ticket to Casablanca?` was translated through the running backend as `فين نقدر نشري تيكي ديال القطر ل كازا؟`.
+
+## 4. PHP form — IMPLEMENTED; LOCAL RUNTIME UNAVAILABLE
+
+- The form accepts text, source language, backend username, and a password input that is never repopulated or rendered.
+- PHP sends JSON to `POST /api/translate` with Basic authentication and renders only an escaped, non-empty `translation` value using `lang="ar"` and `dir="rtl"`.
+- Dedicated messages cover rejected credentials, invalid input, provider failures, malformed/empty success responses, and an unreachable backend.
+- PHP, Winget, Chocolatey, and Scoop were unavailable on this Windows environment. Docker CLI existed but its engine was not running, so no lint, local PHP server, or browser submission was claimed.
+- The README gives the minimal official PHP ZIP/Visual C++ runtime setup and exact lint/server commands. The authenticated browser check remains user-run because it needs the private backend password.
 
 ## Dev/test Liberty configuration isolation — PASSED
 

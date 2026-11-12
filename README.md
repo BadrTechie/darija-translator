@@ -157,20 +157,22 @@ python .\darija_translate.py --backend-url 'http://192.168.1.20:9080'
 
 Text may also be passed positionally or piped on stdin. Non-interactive automation may set `TRANSLATOR_PASSWORD`; interactive use should leave it unset so the private prompt is used. The CLI never accepts or reads the Gemini key.
 
+User-verified live result on Windows (2026-11-12): the CLI sent `Where can I buy a train ticket to Casablanca?` through the running authenticated backend and displayed `فين نقدر نشري تيكي ديال القطر ل كازا؟`.
+
 ## Client 2: PHP form
 
-In the same configured PowerShell session:
+This client requires only the PHP 8 CLI; it has no Composer packages and does not require the cURL extension. From PowerShell:
 
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\php'
 $env:TRANSLATOR_BACKEND_URL = 'http://localhost:9080'
-$env:TRANSLATOR_USERNAME = 'local-demo-user'
-$clientSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
-$env:TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $clientSecret).Password
-php -S 127.0.0.1:8081
+php -d allow_url_fopen=1 -l .\index.php
+php -d allow_url_fopen=1 -S 127.0.0.1:8081
 ```
 
-Open `http://127.0.0.1:8081`. The PHP server calls the backend; the browser never receives credentials. Stop it with Ctrl+C.
+Open `http://127.0.0.1:8081`. Enter the backend username and password in the form along with the source language and text. The form submits with POST; PHP places the credentials only in the backend Basic-auth header, never in the URL or rendered result, and does not refill the password. Stop the PHP server with Ctrl+C.
+
+If `php` is not recognized, download the current **x64 Non Thread Safe ZIP** from [PHP for Windows](https://www.php.net/downloads.php?os=windows), install the linked **Visual C++ Redistributable for Visual Studio 2015–2022**, extract the ZIP to `C:\php`, then open a fresh PowerShell window and run `$env:Path = "C:\php;$env:Path"`. No database, web-server package, Composer install, or PHP extension is needed; `allow_url_fopen` is enabled explicitly by the commands above.
 
 ## Client 3: Chrome Manifest V3 side panel
 
