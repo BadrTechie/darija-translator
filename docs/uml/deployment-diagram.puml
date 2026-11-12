@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+
+node "Client devices" {
+  artifact "Python CLI"
+  artifact "PHP form"
+  artifact "Chrome MV3 side panel"
+  artifact "React Native / Expo"
+}
+
+node "Backend host" {
+  node "Open Liberty\nJava 17" {
+    component "Jakarta Authentication\nBasic module" as Auth
+    component "JAX-RS API\n/health + /translate" as API
+    component "GeminiTranslationClient\nJDK HttpClient" as Client
+  }
+  artifact "Process environment" as Env
+}
+
+cloud "Google Gemini Developer API" as Gemini
+node "Test JVM" {
+  component "Local Gemini-shaped\nHTTP stub" as Stub
+}
+
+"Python CLI" --> Auth : HTTP + Basic
+"PHP form" --> Auth : HTTP + Basic
+"Chrome MV3 side panel" --> Auth : HTTP + Basic
+"React Native / Expo" --> Auth : HTTP + Basic
+Auth --> API
+API --> Client
+Env --> Auth : demo credentials
+Env --> Client : API key, model, timeout
+Client --> Gemini : HTTPS generateContent\nx-goog-api-key
+Client ..> Stub : offline tests only
+@enduml

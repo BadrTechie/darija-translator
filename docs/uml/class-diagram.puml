@@ -1,0 +1,62 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "api" {
+  class RestApplication
+  class HealthResource {
+    +health(): Map<String,String>
+  }
+  class TranslatorResource {
+    +translate(request: TranslationRequest): Response
+    -providerError(exception): Response
+  }
+  class TranslationRequest {
+    -text: String
+    -sourceLanguage: String
+    +getText(): String
+    +getSourceLanguage(): String
+  }
+}
+
+package "translation" {
+  class GeminiTranslationClient {
+    -httpClient: HttpClient
+    -configuration: ProviderConfiguration
+    +translate(text, sourceLanguage): String
+  }
+  class ProviderConfiguration <<record>> {
+    +apiBaseUri: URI
+    +model: String
+    -apiKey: String
+    +timeout: Duration
+    +fromEnvironment(): ProviderConfiguration
+  }
+  class TranslationProviderException {
+    -kind: Kind
+    +kind(): Kind
+  }
+  enum Kind {
+    TIMEOUT
+    REJECTED
+    EMPTY_RESPONSE
+    UNAVAILABLE
+    CONFIGURATION
+  }
+}
+
+package "security" {
+  class AuthenticationInitializer
+  class BasicAuthenticationModule
+  class AuthenticationDeploymentValidator
+}
+
+TranslatorResource --> TranslationRequest
+TranslatorResource --> GeminiTranslationClient
+TranslatorResource ..> TranslationProviderException
+GeminiTranslationClient *-- ProviderConfiguration
+GeminiTranslationClient ..> TranslationProviderException
+TranslationProviderException *-- Kind
+AuthenticationInitializer --> BasicAuthenticationModule : registers
+AuthenticationDeploymentValidator ..> AuthenticationInitializer : validates env
+@enduml

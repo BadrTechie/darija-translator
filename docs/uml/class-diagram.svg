@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Darija Translator UML class diagram</title>
+  <desc id="desc">Actual Java API, translation, and security classes with their dependencies.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f8f7f2}.pkg{fill:none;stroke:#587066;stroke-width:2;stroke-dasharray:8 5}.box{fill:#fff;stroke:#173f31;stroke-width:2}.head{fill:#dcece5}.title{font:700 18px system-ui,sans-serif;fill:#173f31}.st{font:italic 13px system-ui,sans-serif;fill:#4a6158}.txt{font:14px ui-monospace,monospace;fill:#1d2d27}.pkglabel{font:700 20px system-ui,sans-serif;fill:#36594c}.line{stroke:#2d5d4b;stroke-width:2;fill:none}.dash{stroke-dasharray:7 5}.label{font:13px system-ui,sans-serif;fill:#27483c}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#2d5d4b"/></marker>
+    <marker id="diamond" markerWidth="14" markerHeight="10" refX="3" refY="5" orient="auto"><path d="M0,5 L5,1 L10,5 L5,9 Z" fill="#2d5d4b"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="900"/>
+  <text class="title" x="40" y="38" font-size="26">Darija Translator — UML Class Diagram</text>
+
+  <rect class="pkg" x="30" y="65" width="430" height="785" rx="10"/><text class="pkglabel" x="50" y="95">api</text>
+  <g transform="translate(65 125)"><rect class="box" width="360" height="80" rx="5"/><rect class="head" width="360" height="42" rx="5"/><text class="title" x="180" y="27" text-anchor="middle">RestApplication</text><text class="txt" x="12" y="65">@ApplicationPath("/api")</text></g>
+  <g transform="translate(65 245)"><rect class="box" width="360" height="110" rx="5"/><rect class="head" width="360" height="42" rx="5"/><text class="title" x="180" y="27" text-anchor="middle">HealthResource</text><line x1="0" y1="42" x2="360" y2="42" stroke="#173f31"/><text class="txt" x="12" y="69">@GET /health</text><text class="txt" x="12" y="94">+ health(): Map&lt;String,String&gt;</text></g>
+  <g transform="translate(65 395)"><rect class="box" width="360" height="155" rx="5"/><rect class="head" width="360" height="42" rx="5"/><text class="title" x="180" y="27" text-anchor="middle">TranslatorResource</text><line x1="0" y1="42" x2="360" y2="42" stroke="#173f31"/><text class="txt" x="12" y="69">@POST /translate</text><text class="txt" x="12" y="96">+ translate(request): Response</text><text class="txt" x="12" y="123">- providerError(exception): Response</text></g>
+  <g transform="translate(65 620)"><rect class="box" width="360" height="175" rx="5"/><rect class="head" width="360" height="42" rx="5"/><text class="title" x="180" y="27" text-anchor="middle">TranslationRequest</text><line x1="0" y1="42" x2="360" y2="42" stroke="#173f31"/><text class="txt" x="12" y="69">- text: String</text><text class="txt" x="12" y="94">- sourceLanguage: String</text><line x1="0" y1="108" x2="360" y2="108" stroke="#173f31"/><text class="txt" x="12" y="136">+ getText(): String</text><text class="txt" x="12" y="161">+ getSourceLanguage(): String</text></g>
+
+  <rect class="pkg" x="500" y="65" width="510" height="785" rx="10"/><text class="pkglabel" x="520" y="95">translation</text>
+  <g transform="translate(545 125)"><rect class="box" width="420" height="155" rx="5"/><rect class="head" width="420" height="42" rx="5"/><text class="title" x="210" y="27" text-anchor="middle">GeminiTranslationClient</text><line x1="0" y1="42" x2="420" y2="42" stroke="#173f31"/><text class="txt" x="12" y="69">- httpClient: HttpClient</text><text class="txt" x="12" y="94">- configuration: ProviderConfiguration</text><line x1="0" y1="108" x2="420" y2="108" stroke="#173f31"/><text class="txt" x="12" y="136">+ translate(text, sourceLanguage): String</text></g>
+  <g transform="translate(545 340)"><rect class="box" width="420" height="210" rx="5"/><rect class="head" width="420" height="58" rx="5"/><text class="st" x="210" y="20" text-anchor="middle">&lt;&lt;record&gt;&gt;</text><text class="title" x="210" y="44" text-anchor="middle">ProviderConfiguration</text><line x1="0" y1="58" x2="420" y2="58" stroke="#173f31"/><text class="txt" x="12" y="84">+ apiBaseUri: URI</text><text class="txt" x="12" y="109">+ model: String</text><text class="txt" x="12" y="134">- apiKey: String</text><text class="txt" x="12" y="159">+ timeout: Duration</text><line x1="0" y1="172" x2="420" y2="172" stroke="#173f31"/><text class="txt" x="12" y="198">+ fromEnvironment(): ProviderConfiguration</text></g>
+  <g transform="translate(545 610)"><rect class="box" width="420" height="145" rx="5"/><rect class="head" width="420" height="42" rx="5"/><text class="title" x="210" y="27" text-anchor="middle">TranslationProviderException</text><line x1="0" y1="42" x2="420" y2="42" stroke="#173f31"/><text class="txt" x="12" y="69">- kind: Kind</text><line x1="0" y1="84" x2="420" y2="84" stroke="#173f31"/><text class="txt" x="12" y="112">+ kind(): Kind</text></g>
+  <g transform="translate(600 785)"><rect class="box" width="310" height="50" rx="5"/><rect class="head" width="310" height="50" rx="5"/><text class="title" x="155" y="21" text-anchor="middle">Kind &lt;&lt;enum&gt;&gt;</text><text class="st" x="155" y="40" text-anchor="middle">timeout · rejected · empty · unavailable · config</text></g>
+
+  <rect class="pkg" x="1050" y="65" width="320" height="785" rx="10"/><text class="pkglabel" x="1070" y="95">security</text>
+  <g transform="translate(1080 145)"><rect class="box" width="260" height="75" rx="5"/><rect class="head" width="260" height="75" rx="5"/><text class="title" x="130" y="28" text-anchor="middle">Authentication</text><text class="title" x="130" y="52" text-anchor="middle">Initializer</text></g>
+  <g transform="translate(1080 340)"><rect class="box" width="260" height="75" rx="5"/><rect class="head" width="260" height="75" rx="5"/><text class="title" x="130" y="28" text-anchor="middle">BasicAuthentication</text><text class="title" x="130" y="52" text-anchor="middle">Module</text></g>
+  <g transform="translate(1080 565)"><rect class="box" width="260" height="90" rx="5"/><rect class="head" width="260" height="90" rx="5"/><text class="title" x="130" y="27" text-anchor="middle">Authentication</text><text class="title" x="130" y="51" text-anchor="middle">DeploymentValidator</text><text class="st" x="130" y="74" text-anchor="middle">CDI Extension</text></g>
+
+  <path class="line" marker-end="url(#arrow)" d="M425 465 C485 430 500 240 545 215"/><text class="label" x="462" y="342">creates</text>
+  <path class="line" marker-end="url(#arrow)" d="M245 550 L245 620"/><text class="label" x="260" y="590">uses</text>
+  <path class="line dash" marker-end="url(#arrow)" d="M425 500 C500 570 500 650 545 675"/><text class="label" x="460" y="615">maps</text>
+  <path class="line" marker-start="url(#diamond)" d="M755 280 L755 340"/><text class="label" x="770" y="316">configuration</text>
+  <path class="line dash" marker-end="url(#arrow)" d="M835 280 C945 380 950 580 850 610"/><text class="label" x="922" y="480">throws</text>
+  <path class="line" marker-start="url(#diamond)" d="M755 755 L755 785"/>
+  <path class="line" marker-end="url(#arrow)" d="M1210 220 L1210 340"/><text class="label" x="1224" y="285">registers</text>
+  <path class="line dash" marker-end="url(#arrow)" d="M1210 565 L1210 220"/><text class="label" x="1224" y="500">validates env</text>
+</svg>

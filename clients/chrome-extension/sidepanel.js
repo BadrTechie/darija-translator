@@ -75,6 +75,13 @@ function setStatus(message, isError) {
 
 elements.save.addEventListener('click', saveSettings);
 elements.translate.addEventListener('click', translate);
+chrome.storage.onChanged.addListener(async (changes, area) => {
+  if (area === 'session' && changes.pendingSelection?.newValue) {
+    elements.text.value = changes.pendingSelection.newValue;
+    await chrome.storage.session.remove('pendingSelection');
+    await translate();
+  }
+});
 
 (async () => {
   await loadSettings();

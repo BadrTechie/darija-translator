@@ -7,6 +7,10 @@ Thumbs.db
 
 # Maven and Open Liberty build output
 **/target/
+**/node_modules/
+**/.expo/
+**/__pycache__/
+*.py[cod]
 
 # Local configuration and secrets
 .env
@@ -14,4 +18,10 @@ Thumbs.db
 !.env.example
 *.local
 backend/src/main/liberty/config/server.env
+*.jks
+*.p12
+*.keystore
+
+# Submission archives are generated locally from tracked source.
+*.zip
 

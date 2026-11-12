@@ -1,6 +1,6 @@
 function basicToken(username, password) {
   const value = `${username}:${password}`;
-  if (typeof btoa === 'function') return btoa(value);
+  if (typeof btoa === 'function') return btoa(unescape(encodeURIComponent(value)));
   return Buffer.from(value, 'utf8').toString('base64');
 }
 
