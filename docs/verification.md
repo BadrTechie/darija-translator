@@ -13,6 +13,6 @@ Date: 2026-11-12 (Africa/Casablanca)
 | React Native Expo UI | `npm install` and emulator/device | Blocked: `npm install` produced no output/files after several minutes both sandboxed and with network permission; stopped. Run it on the laptop, then `npm run android` |
 | Real Gemini translation | Authenticated backend request | Not run: no API key was read or available to this session |
 | UML exports | SVG XML/viewability inspection | Passed: both SVG exports parsed as valid XML; sources reflect implemented classes/nodes |
-| Submission archive | Open/list and exclusion audit | Passed after final packaging: required paths present and excluded patterns absent |
+| Submission archive | Open/list and exclusion audit | Passed after final packaging: required paths present and excluded patterns absent; test-only credentials are explicitly named `server.env.test` |
 
 No real provider or Basic-auth secret is recorded in this file. See the root README for exact personal verification commands.

@@ -61,7 +61,7 @@
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <serverEnvFile>
-                                ${project.basedir}/src/test/liberty/config/server.env
+                                ${project.basedir}/src/test/liberty/config/server.env.test
                             </serverEnvFile>
                         </configuration>
                         <goals>
