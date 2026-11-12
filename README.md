@@ -111,7 +111,7 @@ Set-Location 'C:\Users\lcbad\Downloads\darija-translator\backend'
 
 `clean verify` starts Open Liberty, runs the authenticated endpoint suite against a local Gemini-shaped HTTP stub, checks success, 400, 401, provider 429/rejection, empty response, and timeout, then stops Liberty. It needs no real API key and no provider network access after dependencies are cached.
 
-When `liberty:dev` reports the app available at `http://localhost:9080`, verify health:
+Keep that first terminal open. In a second PowerShell window, verify health:
 
 ```powershell
 Invoke-RestMethod 'http://localhost:9080/api/health'
@@ -119,9 +119,12 @@ Invoke-RestMethod 'http://localhost:9080/api/health'
 
 ### One real authenticated translation
 
-With the backend running and the variables above set in that same PowerShell session:
+With the backend running in the first terminal, configure the same Basic-auth demo credentials in the second terminal (the Gemini key stays only in the backend terminal), then call the endpoint:
 
 ```powershell
+$env:TRANSLATOR_DEMO_USERNAME = 'local-demo-user'
+$requestSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
+$env:TRANSLATOR_DEMO_PASSWORD = [System.Net.NetworkCredential]::new('', $requestSecret).Password
 $pair = "$($env:TRANSLATOR_DEMO_USERNAME):$($env:TRANSLATOR_DEMO_PASSWORD)"
 $basic = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($pair))
 $body = @{ text = 'Welcome to Morocco'; sourceLanguage = 'English' } | ConvertTo-Json -Compress
@@ -139,8 +142,9 @@ Uses only Python's standard library.
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\python'
 $env:TRANSLATOR_BACKEND_URL = 'http://localhost:9080'
-$env:TRANSLATOR_USERNAME = $env:TRANSLATOR_DEMO_USERNAME
-$env:TRANSLATOR_PASSWORD = $env:TRANSLATOR_DEMO_PASSWORD
+$env:TRANSLATOR_USERNAME = 'local-demo-user'
+$clientSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
+$env:TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $clientSecret).Password
 python .\darija_translate.py 'Hello, how are you?' --source-language English
 python -m unittest -v test_cli.py
 ```
@@ -154,8 +158,9 @@ In the same configured PowerShell session:
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\php'
 $env:TRANSLATOR_BACKEND_URL = 'http://localhost:9080'
-$env:TRANSLATOR_USERNAME = $env:TRANSLATOR_DEMO_USERNAME
-$env:TRANSLATOR_PASSWORD = $env:TRANSLATOR_DEMO_PASSWORD
+$env:TRANSLATOR_USERNAME = 'local-demo-user'
+$clientSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
+$env:TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $clientSecret).Password
 php -S 127.0.0.1:8081
 ```
 
@@ -177,8 +182,9 @@ The extension stores demo Basic credentials in Chrome extension local storage. D
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\react-native'
 npm install
 $env:EXPO_PUBLIC_BACKEND_URL = 'http://10.0.2.2:9080'
-$env:EXPO_PUBLIC_TRANSLATOR_USERNAME = $env:TRANSLATOR_DEMO_USERNAME
-$env:EXPO_PUBLIC_TRANSLATOR_PASSWORD = $env:TRANSLATOR_DEMO_PASSWORD
+$env:EXPO_PUBLIC_TRANSLATOR_USERNAME = 'local-demo-user'
+$mobileSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
+$env:EXPO_PUBLIC_TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $mobileSecret).Password
 npm test
 npm run android
 ```
