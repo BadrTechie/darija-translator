@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Darija Translator</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <h1>Darija Translator</h1>
+  <details id="settings">
+    <summary>Backend settings</summary>
+    <label>Backend URL<input id="backendUrl" type="url" placeholder="http://localhost:9080"></label>
+    <label>Username<input id="username" autocomplete="username"></label>
+    <label>Password<input id="password" type="password" autocomplete="current-password"></label>
+    <button id="save" type="button">Save settings</button>
+  </details>
+  <label>Selected text<textarea id="text" rows="8"></textarea></label>
+  <label>Source language<input id="sourceLanguage" value="unspecified"></label>
+  <button id="translate" type="button">Translate</button>
+  <p id="status" role="status"></p>
+  <section id="result" aria-live="polite" dir="rtl"></section>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
