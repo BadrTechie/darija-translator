@@ -10,8 +10,8 @@ Date: 2026-11-13 (Africa/Casablanca)
 | PHP form | Source/security review plus user-run authenticated browser form | Passed live; readable Arabic returned and password field cleared |
 | Chrome Manifest V3 | Syntax checks, 3 interaction tests, isolated challenged-fetch probe, and Chrome 157 live UI | Passed with extension 1.1.1: two selections produced two different results; `Example Domain` → `نطاق كمثال` |
 | React Native API layer | `node --test test/*.test.js` | Passed (3 tests): exact authenticated POST and JSON body, source normalization, error handling |
-| React Native Expo UI | SDK 58 dependency alignment, Expo Doctor, API tests, and cache-cleared `expo export --platform ios` | Passed automated checks: Expo 58.0.25 / React Native 0.88.1 / React 19.3.0, 20/20 Doctor checks, 3/3 API tests, 597-module iOS bundle; physical iPhone Expo Go run remains user verification |
-| Real Gemini translation | Authenticated backend through normal clients | User-verified live through both the Python CLI and PHP form; no key was exposed |
+| React Native Expo UI | SDK 58 dependency alignment, Expo Doctor, API tests, cache-cleared `expo export --platform ios`, and physical-iPhone Expo Go run | Passed: 20/20 Doctor checks, 3/3 API tests, 597-module iOS bundle, authenticated live translation, correct RTL Arabic, and runtime-only masked password |
+| Real Gemini translation | Authenticated backend through normal clients | User-verified live through the Python CLI, PHP form, and physical-iPhone Expo client; no key was exposed |
 | UML exports | SVG XML/viewability inspection | Passed: both SVG exports parsed as valid XML; sources reflect implemented classes/nodes |
 | Submission archive | Open/list and exclusion audit | Passed after final packaging: required paths present and excluded patterns absent; test-only credentials are explicitly named `server.env.test` |
 

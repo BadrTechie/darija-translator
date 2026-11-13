@@ -54,7 +54,7 @@
 - Live-debug fix: the fetch now uses `credentials: "omit"` while retaining its explicit Basic header, preventing Chrome from owning the backend's 401 challenge. An isolated Chrome 157 probe sent one POST with the header present and returned one 401 to JavaScript; no header value was recorded.
 - The panel test verifies one request per Save, URL `http://localhost:9080/api/translate`, POST method, explicit-header presence, 401 loading completion, retained selection, cleared session password, reopened settings, and no automatic retry. Correcting the password and saving starts exactly one new request.
 
-## 6. React Native mobile client — IMPLEMENTED; IPHONE LIVE VERIFICATION PENDING
+## 6. React Native mobile client — PASSED (PHYSICAL IPHONE)
 
 - Inspected before modification: the existing client is an Expo managed app on SDK 54 with React Native 0.81.5 and React 19.1.0; it has no native `ios`/`android` projects and initially had no lockfile.
 - The existing scripts are `start`, `android`, `ios`, `web`, and dependency-free Node API tests. The API helper already targeted `POST /api/translate` with an explicit Basic `Authorization` header.
@@ -66,7 +66,10 @@
 - `package.json` and `package-lock.json` are aligned. The exact installed top-level versions are Expo 58.0.25, React Native 0.88.1, React 19.3.0, and Expo Status Bar 58.0.5.
 - Expo Doctor passes all 20 checks. The three API tests pass, and a cache-cleared production-style iOS export bundled all 597 modules successfully; the temporary export was removed after verification.
 - `app.json` has no obsolete `sdkVersion` or SDK 54-specific setting. Its iOS local-network transport permission is retained for the LAN backend, and the SDK 58 configuration validates cleanly.
-- The remaining step is user verification in Expo Go on the physical iPhone with the private backend credentials; no secret is recorded in the repository.
+- Physical-iPhone verification passed in Expo Go SDK 58 against `http://10.126.132.97:9080`.
+- An authenticated request translated `What time does the next train leave?` to `فاش غايرموك القطار الجاي؟`.
+- The Arabic result displayed correctly right to left. The backend password remained masked and runtime-only, and the Gemini API key remained backend-only.
+- No credential or provider key is recorded in the repository.
 
 ## Dev/test Liberty configuration isolation — PASSED
 

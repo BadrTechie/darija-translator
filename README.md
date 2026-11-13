@@ -225,6 +225,8 @@ Sign in at the Expo CLI prompt with the same account as Expo Go, then scan the t
 
 Liberty already listens on all interfaces. If Windows asks whether Java may communicate through the firewall, allow it on **Private networks**; otherwise add an inbound private-network rule for TCP 9080. The app sends JSON to `POST /api/translate` with an explicit Basic-auth header and renders the returned Arabic `translation` right to left. The password is accepted only through the masked runtime field and is not placed in an `EXPO_PUBLIC_*` variable. The Gemini key remains backend-only.
 
+User-verified live on a physical iPhone with Expo Go SDK 58 (2026-11-13): using `http://10.126.132.97:9080`, the authenticated input `What time does the next train leave?` returned `فاش غايرموك القطار الجاي؟` in correctly rendered right-to-left Arabic. The password remained masked and runtime-only, and the Gemini API key remained backend-only.
+
 If Metro cannot reach the iPhone despite both devices being on the same Wi-Fi, `npx expo start --tunnel --clear` can tunnel the Expo development connection. The backend still needs to be reachable at the PC's LAN address. As a fallback, an installed Android Studio emulator can use `npm run android` and `http://10.0.2.2:9080`, which avoids Wi-Fi client-isolation and Windows LAN routing issues.
 
 ## Diagrams and demo
