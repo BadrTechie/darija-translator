@@ -42,7 +42,7 @@
 - The README gives the minimal official PHP ZIP/Visual C++ runtime setup and exact lint/server commands.
 - User-verified live on Windows: submitting `How much is a train ticket to Rabat?` through the local form returned readable Arabic, and the rendered password field was empty afterward.
 
-## 5. Chrome Manifest V3 side panel — AUTOMATED CHECKS PASSED; LIVE UI PENDING
+## 5. Chrome Manifest V3 side panel — PASSED (USER-VERIFIED)
 
 - Chrome 116+ MV3 manifest declares context-menu, side-panel, storage, and HTTP(S) host access.
 - The context-menu action stores the exact selection in extension session storage and opens the side panel for the originating tab.
@@ -50,9 +50,23 @@
 - New selections replace the panel text, abort any older in-flight request, and render only the newest Darija result with `lang="ar"` and `dir="rtl"`.
 - Backend URL/username persist locally; the password exists only in in-memory extension session storage. The Gemini key remains backend-only.
 - `node --check` passed for both JavaScript entry points. `node --test test-extension.mjs` passed 3/3 interaction tests.
-- Installed Chrome 157 exceeds the declared Chrome 116 minimum. Loading the unpacked extension, side-panel appearance, and one authenticated live translation remain user verification steps because they require changing the user's browser and entering the private backend password.
+- User-verified on Chrome 157 with extension version 1.1.1: two different webpage selections produced two different translations in the side panel. The second selection was `Example Domain` and its result was `نطاق كمثال`.
 - Live-debug fix: the fetch now uses `credentials: "omit"` while retaining its explicit Basic header, preventing Chrome from owning the backend's 401 challenge. An isolated Chrome 157 probe sent one POST with the header present and returned one 401 to JavaScript; no header value was recorded.
 - The panel test verifies one request per Save, URL `http://localhost:9080/api/translate`, POST method, explicit-header presence, 401 loading completion, retained selection, cleared session password, reopened settings, and no automatic retry. Correcting the password and saving starts exactly one new request.
+
+## 6. React Native mobile client — IMPLEMENTED; IPHONE LIVE VERIFICATION PENDING
+
+- Inspected before modification: the existing client is an Expo managed app on SDK 54 with React Native 0.81.5 and React 19.1.0; it has no native `ios`/`android` projects and initially had no lockfile.
+- The existing scripts are `start`, `android`, `ios`, `web`, and dependency-free Node API tests. The API helper already targeted `POST /api/translate` with an explicit Basic `Authorization` header.
+- The UI now accepts an editable backend URL, backend username, runtime-only masked password, source language, and text. The source language is passed to the API helper instead of being hidden at its default.
+- The request helper trims the backend URL, normalizes a blank source language to `unspecified`, sends `{ text, sourceLanguage }` as JSON, and returns only a non-empty `translation` value.
+- Three Node tests pass, including exact POST URL/method, Basic header, JSON body/source-language normalization, Arabic success, and backend error handling.
+- The project was upgraded with Expo's official SDK 58 procedure: `npm install expo@^58.0.0`, `npx expo install --fix`, then `npx expo-doctor`. It now matches the SDK 58 Expo Go build installed on the physical iPhone.
+- The iPhone must use the PC's LAN URL (for example, `http://192.168.1.20:9080`) on the same Wi-Fi. Liberty already listens on `host="*"`; Windows Firewall must permit private-network access to port 9080.
+- `package.json` and `package-lock.json` are aligned. The exact installed top-level versions are Expo 58.0.25, React Native 0.88.1, React 19.3.0, and Expo Status Bar 58.0.5.
+- Expo Doctor passes all 20 checks. The three API tests pass, and a cache-cleared production-style iOS export bundled all 597 modules successfully; the temporary export was removed after verification.
+- `app.json` has no obsolete `sdkVersion` or SDK 54-specific setting. Its iOS local-network transport permission is retained for the LAN backend, and the SDK 58 configuration validates cleanly.
+- The remaining step is user verification in Expo Go on the physical iPhone with the private backend credentials; no secret is recorded in the repository.
 
 ## Dev/test Liberty configuration isolation — PASSED
 

@@ -67,7 +67,7 @@ Incorrect or absent Basic credentials return 401 with `WWW-Authenticate: Basic`.
 - Internet on the first Maven/Liberty build
 - Python 3.10+ for the CLI
 - PHP 8+ with `allow_url_fopen=1` for the form
-- Node.js 20+ plus an Android/iOS device or emulator for Expo
+- Node.js 22.13+ plus an Android/iOS device or emulator for Expo SDK 58
 - Chrome for the unpacked Manifest V3 extension
 
 Example Java setup in PowerShell:
@@ -199,27 +199,33 @@ The extension retains the backend URL and username in extension-local storage. T
 
 The request uses an explicit Basic `Authorization` header with browser-managed credentials disabled. If the backend returns 401/403, the panel stops loading, keeps the selected text, clears only the session password, reopens **Backend settings**, and waits for you to correct the password and click **Save settings** again. It does not invoke Chrome's native HTTP sign-in flow or retry automatically. For safe diagnostics, the side-panel console records only request ID, URL, method, response status, and whether the header is present—never its value.
 
+User-verified live on Chrome 157 with extension version 1.1.1 (2026-11-13): two different webpage selections produced two different side-panel translations. The second was `Example Domain` → `نطاق كمثال`.
+
 ## Client 4: React Native (Expo)
+
+This is an Expo managed app on SDK 58 (React Native 0.88.1 and React 19.3.0), with no generated native projects. It matches the SDK 58 Expo Go build installed on the physical iPhone. An Android emulator is unnecessary unless the local Wi-Fi prevents the phone from reaching the PC.
+
+Install **Expo Go** from the iPhone App Store, sign in to it with an Expo account, and put the iPhone and Windows laptop on the same Wi-Fi. Then run:
 
 ```powershell
 Set-Location 'C:\Users\lcbad\Downloads\darija-translator\clients\react-native'
 npm install
-$env:EXPO_PUBLIC_BACKEND_URL = 'http://10.0.2.2:9080'
-$env:EXPO_PUBLIC_TRANSLATOR_USERNAME = 'local-demo-user'
-$mobileSecret = Read-Host 'Basic-auth password used by the backend' -AsSecureString
-$env:EXPO_PUBLIC_TRANSLATOR_PASSWORD = [System.Net.NetworkCredential]::new('', $mobileSecret).Password
 npm test
-npm run android
+npx expo login
+npx expo start --clear
 ```
 
-Backend URL by target:
+Sign in at the Expo CLI prompt with the same account as Expo Go, then scan the terminal QR code with the iPhone Camera. In the app, enter:
 
-- Android Studio emulator: `http://10.0.2.2:9080`
-- iOS simulator on the same Mac: `http://127.0.0.1:9080`
-- Physical phone: `http://<YOUR-PC-LAN-IP>:9080` (same Wi-Fi; allow inbound TCP 9080 in Windows Firewall)
-- Expo Web on the same PC: `http://localhost:9080`
+- **Backend URL:** `http://<YOUR-PC-LAN-IP>:9080`. Run `ipconfig` and use the Wi-Fi adapter's IPv4 address, for example `http://192.168.1.20:9080`. Do not use `localhost` on the phone.
+- **Username:** the backend demo username.
+- **Password:** the backend demo password; the field is masked and starts empty.
+- **Source language:** for example, `English`.
+- **Text to translate:** the source text.
 
-The app exposes editable backend URL and demo credential fields, with visible loading, result, and error states. Expo `EXPO_PUBLIC_*` values are bundled into the app, so use only disposable demo Basic credentials. They are unrelated to and must never contain `GEMINI_API_KEY`.
+Liberty already listens on all interfaces. If Windows asks whether Java may communicate through the firewall, allow it on **Private networks**; otherwise add an inbound private-network rule for TCP 9080. The app sends JSON to `POST /api/translate` with an explicit Basic-auth header and renders the returned Arabic `translation` right to left. The password is accepted only through the masked runtime field and is not placed in an `EXPO_PUBLIC_*` variable. The Gemini key remains backend-only.
+
+If Metro cannot reach the iPhone despite both devices being on the same Wi-Fi, `npx expo start --tunnel --clear` can tunnel the Expo development connection. The backend still needs to be reachable at the PC's LAN address. As a fallback, an installed Android Studio emulator can use `npm run android` and `http://10.0.2.2:9080`, which avoids Wi-Fi client-isolation and Windows LAN routing issues.
 
 ## Diagrams and demo
 
