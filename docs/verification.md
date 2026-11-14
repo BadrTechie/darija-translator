@@ -1,6 +1,6 @@
 # Verification record
 
-Date: 2026-11-13 (Africa/Casablanca)
+Date: 2026-11-14 (Africa/Casablanca)
 
 | Deliverable | Check | Result |
 |---|---|---|
@@ -12,7 +12,7 @@ Date: 2026-11-13 (Africa/Casablanca)
 | React Native API layer | `node --test test/*.test.js` | Passed (3 tests): exact authenticated POST and JSON body, source normalization, error handling |
 | React Native Expo UI | SDK 58 dependency alignment, Expo Doctor, API tests, cache-cleared `expo export --platform ios`, and physical-iPhone Expo Go run | Passed: 20/20 Doctor checks, 3/3 API tests, 597-module iOS bundle, authenticated live translation, correct RTL Arabic, and runtime-only masked password |
 | Real Gemini translation | Authenticated backend through normal clients | User-verified live through the Python CLI, PHP form, and physical-iPhone Expo client; no key was exposed |
-| UML exports | SVG XML/viewability inspection | Passed: both SVG exports parsed as valid XML; sources reflect implemented classes/nodes |
+| UML exports | PlantUML/SVG semantic comparison, SVG XML parsing, and user visual inspection | Passed: all three source/export pairs reflect the implementation and are valid, readable SVGs |
 | Submission archive | Open/list and exclusion audit | Passed after final packaging: required paths present and excluded patterns absent; test-only credentials are explicitly named `server.env.test` |
 
 No real provider or Basic-auth secret is recorded in this file. See the root README for exact personal verification commands.

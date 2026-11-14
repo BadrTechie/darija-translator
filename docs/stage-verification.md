@@ -81,6 +81,22 @@
 - The diagrams accurately communicate authentication, input validation, backend-only Gemini access, all four clients, and provider-error handling.
 - Final automated validation parsed all three SVGs as XML, compared required entities and flows across each PlantUML/SVG pair, confirmed all 10 production Java source types in the class pair, resolved all six README UML links, passed `git diff --check`, and found no value-like API key, token, or encoded Basic credential in the repository scan.
 
+## 8. Final repository QA — COMPLETED (PHP LINT NOT RUN)
+
+| Area | Commands/checks | Result |
+|---|---|---|
+| Repository | Clean-start `git status`; tracked/untracked inventory; required-file, zero-byte, JSON/XML, generated-output, and ignore-rule checks | Passed. The working tree started clean; 27/27 required paths were present and non-empty. `.gitignore` was extended for standalone Liberty output, Expo export/native folders, and local logs. |
+| Backend | Temurin 17.0.20.1; `mvnw.cmd clean verify -Pintegration-tests` through the host-context Maven route | Passed: `BUILD SUCCESS`; 9 tests, 0 failures/errors/skips; local loopback Gemini-shaped stub only; Liberty stopped cleanly. `backend/target/darija-translator-backend.war` was produced and audited. |
+| Python CLI | `python -m unittest -v`; `python -m compileall -q darija_translate.py test_cli.py`; import/provider-reference audit | Passed: 7/7 tests, compile success, standard-library/local imports only, and no Gemini-key/API reference. |
+| PHP form | Attempted PATH lookup and `C:\php\php.exe -l index.php`; static provider-separation, password, and output-escaping checks | PHP lint not run: no PHP executable was in PATH, and `C:\php\php.exe` was a directory containing PHP source rather than an executable file. Static checks passed; no additional live-browser result is claimed. |
+| Chrome extension | `node --check` on both JavaScript entry points; `node --test test-extension.mjs`; manifest/storage/auth-flow checks | Passed: 3/3 tests; valid Manifest V3 version 1.1.1; password remains session-only; no Gemini reference; explicit Basic header plus `credentials: 'omit'` fix retained. |
+| React Native | `npm test`; `npm ls --depth=0`; package/lock comparison; `npx --yes expo-doctor@latest`; clean `npx expo export --platform ios --clear` | Passed: 3/3 API tests, 20/20 Doctor checks, consistent dependencies, Expo 58.0.25, and a 597-module iOS bundle. Temporary `dist` was removed; no `ios` or `android` project was generated. |
+| Architecture/docs | README local-link resolution; demo UML references; PlantUML presence/delimiters; SVG XML parsing | Passed: 9/9 README local links, 3/3 demo UML references, and all three non-empty PlantUML/SVG pairs validated. |
+| Security/hygiene | Tracked-file secret/token/encoded-Basic/private-key scan; client Gemini scan; private-LAN URL classification; generated-file audit; `git diff --check` | Passed. No real-looking secret, client-side Gemini reference, concrete private LAN URL outside documentation, tracked local secret, or tracked generated output was found. |
+
+- Stage 6 remains the physical-iPhone evidence; no additional device run was required or claimed.
+- The earlier user-verified PHP browser result remains the live PHP evidence; PHP runtime lint is the only Stage 8 environment limitation.
+
 ## Dev/test Liberty configuration isolation — PASSED
 
 - Root cause: dev mode and integration tests shared `darijaTranslatorServer`; the integration execution copied `server.env.test` into that persistent server directory, so later dev starts reused test credentials and the stub URL.

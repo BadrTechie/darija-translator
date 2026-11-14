@@ -7,10 +7,22 @@ Thumbs.db
 
 # Maven and Open Liberty build output
 **/target/
+backend/wlp/
+backend/.liberty/
 **/node_modules/
 **/.expo/
 **/__pycache__/
 *.py[cod]
+
+# Expo generated output and native projects (this app stays managed)
+clients/react-native/dist/
+clients/react-native/web-build/
+clients/react-native/.expo-shared/
+clients/react-native/ios/
+clients/react-native/android/
+
+# Local runtime output
+*.log
 
 # Local configuration and secrets
 .env
