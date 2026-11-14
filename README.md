@@ -233,6 +233,7 @@ If Metro cannot reach the iPhone despite both devices being on the same Wi-Fi, `
 
 - [UML class diagram source](docs/uml/class-diagram.puml) and [viewable SVG](docs/uml/class-diagram.svg)
 - [UML deployment diagram source](docs/uml/deployment-diagram.puml) and [viewable SVG](docs/uml/deployment-diagram.svg)
+- [Authenticated translation sequence source](docs/uml/translation-sequence.puml) and [viewable SVG](docs/uml/translation-sequence.svg)
 - [Timed five-minute demo script](docs/demo-script.md)
 - [Verification record](docs/verification.md)
 - [IntelliJ Maven output evidence](docs/intellij-maven-output.txt)

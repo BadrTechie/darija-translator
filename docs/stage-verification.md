@@ -71,6 +71,16 @@
 - The Arabic result displayed correctly right to left. The backend password remained masked and runtime-only, and the Gemini API key remained backend-only.
 - No credential or provider key is recorded in the repository.
 
+## 7. Technical Architecture UML — PASSED (USER-VERIFIED)
+
+- The editable PlantUML sources and matching SVG exports cover the final Java backend class structure, the deployed clients and backend/provider topology, and the authenticated translation sequence.
+- The class diagram records the audited API, request model, authentication, configuration, Gemini integration, exception, enum, framework implementation, initialization, composition, and dependency relationships without inventing application classes.
+- The deployment diagram records the Python CLI, PHP development server/web client, Chrome MV3 service worker and side panel with their actual storage split, Expo Go SDK 58 iPhone client, Open Liberty/Jakarta components, environment-only backend secrets, and the HTTPS Gemini call.
+- The sequence diagram records the normal authenticated translation flow plus the implemented 401 invalid-credentials, 400 blank-text, 502/503 provider-error, and 504 provider-timeout paths.
+- Final user visual inspection passed for all three exports: text and connector routing are readable, no content is cut off, no collisions remain, and no credential or API-key value appears.
+- The diagrams accurately communicate authentication, input validation, backend-only Gemini access, all four clients, and provider-error handling.
+- Final automated validation parsed all three SVGs as XML, compared required entities and flows across each PlantUML/SVG pair, confirmed all 10 production Java source types in the class pair, resolved all six README UML links, passed `git diff --check`, and found no value-like API key, token, or encoded Basic credential in the repository scan.
+
 ## Dev/test Liberty configuration isolation — PASSED
 
 - Root cause: dev mode and integration tests shared `darijaTranslatorServer`; the integration execution copied `server.env.test` into that persistent server directory, so later dev starts reused test credentials and the stub URL.

@@ -1,35 +1,68 @@
 @startuml
+title Darija Translator — Deployment Diagram
 left to right direction
+skinparam linetype ortho
 
-node "Client devices" {
-  artifact "Python CLI"
-  artifact "PHP form"
-  artifact "Chrome MV3 side panel"
-  artifact "React Native / Expo"
+node "Windows workstation" as Workstation {
+  node "Terminal" as Terminal {
+    artifact "Python CLI\ndarija_translate.py" as Python
+  }
+
+  node "PHP development server\nphp -S 127.0.0.1:8081" as PhpServer {
+    artifact "PHP web client\nindex.php" as Php
+  }
+  node "Web browser" as PhpBrowser
+
+  node "Chrome 116+" as Chrome {
+    artifact "MV3 service worker" as Worker
+    artifact "Side panel" as Panel
+    database "chrome.storage.local\nbackend URL + username" as LocalStorage
+    database "chrome.storage.session\npassword + pending selection" as SessionStorage
+  }
 }
 
-node "Backend host" {
-  node "Open Liberty\nJava 17" {
-    component "Jakarta Authentication\nBasic module" as Auth
-    component "JAX-RS API\n/health + /translate" as API
-    component "GeminiTranslationClient\nJDK HttpClient" as Client
+node "Physical iPhone" as IPhone {
+  node "Expo Go SDK 58" {
+    artifact "React Native client\npassword in component state only" as Mobile
   }
-  artifact "Process environment" as Env
+}
+
+node "Backend host" as BackendHost {
+  artifact "Process environment — backend only\nTRANSLATOR_DEMO_USERNAME / TRANSLATOR_DEMO_PASSWORD\nkeystore_password\nGEMINI_API_KEY\nGEMINI_MODEL / base URL / timeout" as Environment
+
+  node "Open Liberty / Java 17\nHTTP endpoint :9080" as Liberty {
+    component "Jakarta Authentication\nBasicAuthenticationModule" as Authentication
+    component "Jakarta REST API\nGET /api/health (public)\nPOST /api/translate (protected)" as RestApi
+    component "GeminiTranslationClient\nJDK HttpClient" as GeminiClient
+  }
 }
 
 cloud "Google Gemini Developer API" as Gemini
-node "Test JVM" {
-  component "Local Gemini-shaped\nHTTP stub" as Stub
-}
 
-"Python CLI" --> Auth : HTTP + Basic
-"PHP form" --> Auth : HTTP + Basic
-"Chrome MV3 side panel" --> Auth : HTTP + Basic
-"React Native / Expo" --> Auth : HTTP + Basic
-Auth --> API
-API --> Client
-Env --> Auth : demo credentials
-Env --> Client : API key, model, timeout
-Client --> Gemini : HTTPS generateContent\nx-goog-api-key
-Client ..> Stub : offline tests only
+PhpBrowser --> Php : HTTP form GET / POST
+Worker --> SessionStorage : selected text
+Worker --> Panel : opens side panel
+Panel --> LocalStorage : reads/writes URL + username
+Panel --> SessionStorage : reads/writes runtime password
+
+Python --> RestApi : HTTP/JSON\nGET /api/health
+Python --> Authentication : HTTP/JSON + Basic authentication\nPOST /api/translate
+Php --> Authentication : HTTP/JSON + Basic authentication\nPOST /api/translate
+Panel --> Authentication : HTTP/JSON + Basic authentication\nPOST /api/translate
+Mobile --> Authentication : HTTP/JSON + Basic authentication\nPOST /api/translate over LAN
+
+Authentication --> RestApi : valid translator-user
+RestApi --> GeminiClient : validated text + source language
+Environment --> Authentication : backend credentials
+Environment --> GeminiClient : server-side key + settings
+GeminiClient --> Gemini : HTTPS/JSON\nPOST /v1beta/models/{model}:generateContent\nx-goog-api-key
+
+note bottom of Python
+  Clients submit backend credentials only.
+  No client receives or stores GEMINI_API_KEY.
+end note
+note bottom of Mobile
+  The iPhone reaches the backend by its LAN URL.
+  The masked password is runtime-only.
+end note
 @enduml

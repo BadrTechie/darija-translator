@@ -1,41 +1,67 @@
 @startuml
+title Darija Translator — Java Backend Class Diagram
+left to right direction
 skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
+skinparam linetype ortho
+hide empty members
 
-package "api" {
-  class RestApplication
+package "ma.ac.university.darijatranslator.api" as api {
+  class RestApplication {
+    {static} @ApplicationPath("/api")
+  }
+
   class HealthResource {
-    +health(): Map<String,String>
+    {static} @GET @Path("/health")
+    + health(): Map<String, String>
   }
+
   class TranslatorResource {
-    +translate(request: TranslationRequest): Response
-    -providerError(exception): Response
+    {static} @POST @Path("/translate")
+    + translate(request: TranslationRequest): Response
+    {static} - providerError(exception: TranslationProviderException): Response
+    {static} - configuredModel(): String
   }
+
   class TranslationRequest {
-    -text: String
-    -sourceLanguage: String
-    +getText(): String
-    +getSourceLanguage(): String
+    - text: String
+    - sourceLanguage: String
+    + TranslationRequest()
+    + getText(): String
+    + setText(text: String): void
+    + getSourceLanguage(): String
+    + setSourceLanguage(sourceLanguage: String): void
   }
 }
 
-package "translation" {
+package "ma.ac.university.darijatranslator.translation" as translation {
   class GeminiTranslationClient {
-    -httpClient: HttpClient
-    -configuration: ProviderConfiguration
-    +translate(text, sourceLanguage): String
+    - httpClient: HttpClient
+    - configuration: ProviderConfiguration
+    + GeminiTranslationClient()
+    ~ GeminiTranslationClient(httpClient: HttpClient, configuration: ProviderConfiguration)
+    + translate(text: String, sourceLanguage: String): String
+    {static} - loadConfiguration(): ProviderConfiguration
+    {static} - buildRequestBody(text: String, sourceLanguage: String): String
+    {static} - extractTranslation(responseBody: String): String
   }
+
   class ProviderConfiguration <<record>> {
-    +apiBaseUri: URI
-    +model: String
-    -apiKey: String
-    +timeout: Duration
-    +fromEnvironment(): ProviderConfiguration
+    + apiBaseUri: URI
+    + model: String
+    - apiKey: String
+    + timeout: Duration
+    {static} + fromEnvironment(): ProviderConfiguration
+    ~ generateContentUri(): URI
   }
+
   class TranslationProviderException {
-    -kind: Kind
-    +kind(): Kind
+    - kind: Kind
+    + TranslationProviderException(kind: Kind, message: String)
+    + TranslationProviderException(kind: Kind, message: String, cause: Throwable)
+    + kind(): Kind
   }
+
   enum Kind {
     TIMEOUT
     REJECTED
@@ -45,18 +71,67 @@ package "translation" {
   }
 }
 
-package "security" {
-  class AuthenticationInitializer
-  class BasicAuthenticationModule
-  class AuthenticationDeploymentValidator
+package "ma.ac.university.darijatranslator.security" as security {
+  class AuthenticationInitializer {
+    {static} ~ USERNAME_ENVIRONMENT_VARIABLE: String
+    {static} ~ PASSWORD_ENVIRONMENT_VARIABLE: String
+    {static} ~ KEYSTORE_PASSWORD_ENVIRONMENT_VARIABLE: String
+    + onStartup(classes: Set<Class<?>>, servletContext: ServletContext): void
+    {static} ~ firstMissingEnvironmentVariable(): String
+  }
+
+  class BasicAuthenticationModule {
+    {static} ~ TRANSLATOR_ROLE: String
+    - expectedUsername: String
+    - expectedPassword: String
+    - callbackHandler: CallbackHandler
+    + BasicAuthenticationModule(expectedUsername: String, expectedPassword: String)
+    + initialize(requestPolicy, responsePolicy, callbackHandler, options): void
+    + getSupportedMessageTypes(): Class<?>[]
+    + validateRequest(messageInfo, clientSubject, serviceSubject): AuthStatus
+    + secureResponse(messageInfo, serviceSubject): AuthStatus
+    + cleanSubject(messageInfo, subject): void
+  }
+
+  class "BasicAuthenticationModule.Credentials" as Credentials <<private record>> {
+    - username: String
+    - password: String
+  }
+
+  class AuthenticationDeploymentValidator {
+    ~ validateConfiguration(@Observes validation: AfterDeploymentValidation): void
+  }
 }
 
-TranslatorResource --> TranslationRequest
-TranslatorResource --> GeminiTranslationClient
-TranslatorResource ..> TranslationProviderException
-GeminiTranslationClient *-- ProviderConfiguration
-GeminiTranslationClient ..> TranslationProviderException
+package "Jakarta / Java APIs" as framework {
+  class Application <<JAX-RS>>
+  interface ServletContainerInitializer
+  interface ServerAuthModule
+  interface Extension <<CDI>>
+  class Exception
+  class HttpClient <<JDK 17>>
+}
+
+RestApplication --|> Application
+AuthenticationInitializer ..|> ServletContainerInitializer
+BasicAuthenticationModule ..|> ServerAuthModule
+AuthenticationDeploymentValidator ..|> Extension
+TranslationProviderException --|> Exception
+
+TranslatorResource --> TranslationRequest : request body
+TranslatorResource ..> GeminiTranslationClient : constructs / calls
+TranslatorResource ..> ProviderConfiguration : model constant
+TranslatorResource ..> TranslationProviderException : maps to HTTP error
+GeminiTranslationClient *-- ProviderConfiguration : configuration
+GeminiTranslationClient --> HttpClient : sends HTTPS request
+GeminiTranslationClient ..> TranslationProviderException : throws
 TranslationProviderException *-- Kind
-AuthenticationInitializer --> BasicAuthenticationModule : registers
-AuthenticationDeploymentValidator ..> AuthenticationInitializer : validates env
+AuthenticationInitializer ..> BasicAuthenticationModule : constructs and registers
+AuthenticationDeploymentValidator ..> AuthenticationInitializer : checks required env vars
+BasicAuthenticationModule *-- Credentials : decodes Basic header
+
+note bottom of ProviderConfiguration
+  Reads Gemini settings from the process environment.
+  The API key remains private and is never returned.
+end note
 @enduml

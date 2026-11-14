@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1800" viewBox="0 0 1800 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Authenticated translation UML sequence diagram</title>
+  <desc id="desc">The actual authenticated translation sequence, including invalid credentials, blank text, successful Gemini translation, provider failures, and timeout alternatives.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f8f7f2}.participant{fill:#dcece5;stroke:#173f31;stroke-width:2}.actor{fill:none;stroke:#173f31;stroke-width:2}.life{stroke:#587066;stroke-width:1.5;stroke-dasharray:7 6}.msg{stroke:#2d5d4b;stroke-width:2;fill:none}.reply{stroke:#2d5d4b;stroke-width:2;stroke-dasharray:7 5;fill:none}.frame{fill:none;stroke:#587066;stroke-width:1.8}.divider{stroke:#587066;stroke-width:1.5;stroke-dasharray:7 5}.alt{fill:#fff8df;stroke:#8a6b19;stroke-width:1.4}.note{fill:#fff8df;stroke:#8a6b19;stroke-width:1.5}.title{font:700 28px system-ui,sans-serif;fill:#173f31}.head{font:700 15px system-ui,sans-serif;fill:#173f31}.txt{font:13px system-ui,sans-serif;fill:#21362e}.small{font:12px system-ui,sans-serif;fill:#334c43}.alttxt{font:700 13px system-ui,sans-serif;fill:#493b16}.num{fill:#176b4d}.numtxt{font:700 11px system-ui,sans-serif;fill:white}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#2d5d4b"/></marker>
+    <marker id="openarrow" markerWidth="11" markerHeight="9" refX="10" refY="4.5" orient="auto"><path d="M1,1 L10,4.5 L1,8" fill="none" stroke="#2d5d4b" stroke-width="1.5"/></marker>
+  </defs>
+  <rect class="bg" width="1800" height="1800"/>
+  <text class="title" x="36" y="42">Authenticated Translation — Sequence Diagram</text>
+
+  <g transform="translate(75 82)"><circle class="actor" cx="55" cy="18" r="16"/><path class="actor" d="M55 34 V73 M25 49 H85 M55 73 L30 105 M55 73 L80 105"/><text class="head" x="55" y="128" text-anchor="middle">User</text></g>
+  <g transform="translate(220 82)"><rect class="participant" width="220" height="82" rx="6"/><text class="head" x="110" y="29" text-anchor="middle">Client</text><text class="small" x="110" y="52" text-anchor="middle">Python / PHP / Chrome / Expo</text></g>
+  <g transform="translate(500 82)"><rect class="participant" width="255" height="82" rx="6"/><text class="head" x="127" y="28" text-anchor="middle">Open Liberty + Jakarta Auth</text><text class="small" x="127" y="52" text-anchor="middle">BasicAuthenticationModule</text></g>
+  <g transform="translate(815 82)"><rect class="participant" width="200" height="82" rx="6"/><text class="head" x="100" y="41" text-anchor="middle">TranslatorResource</text></g>
+  <g transform="translate(1065 82)"><rect class="participant" width="225" height="82" rx="6"/><text class="head" x="112" y="41" text-anchor="middle">GeminiTranslationClient</text></g>
+  <g transform="translate(1340 82)"><rect class="participant" width="210" height="82" rx="6"/><text class="head" x="105" y="29" text-anchor="middle">ProviderConfiguration</text><text class="small" x="105" y="52" text-anchor="middle">+ process environment</text></g>
+  <g transform="translate(1600 82)"><rect class="participant" width="165" height="82" rx="6"/><text class="head" x="82" y="29" text-anchor="middle">Google Gemini</text><text class="small" x="82" y="52" text-anchor="middle">Developer API</text></g>
+
+  <line class="life" x1="130" y1="210" x2="130" y2="1770"/><line class="life" x1="330" y1="164" x2="330" y2="1770"/><line class="life" x1="627" y1="164" x2="627" y2="1770"/><line class="life" x1="915" y1="164" x2="915" y2="1770"/><line class="life" x1="1177" y1="164" x2="1177" y2="1770"/><line class="life" x1="1445" y1="164" x2="1445" y2="1770"/><line class="life" x1="1682" y1="164" x2="1682" y2="1770"/>
+
+  <g><circle class="num" cx="160" cy="235" r="12"/><text class="numtxt" x="160" y="239" text-anchor="middle">1</text><path class="msg" marker-end="url(#arrow)" d="M130 235 H330"/><text class="txt" x="180" y="222">Enter text and backend username/password</text></g>
+  <g><circle class="num" cx="360" cy="285" r="12"/><text class="numtxt" x="360" y="289" text-anchor="middle">2</text><path class="msg" marker-end="url(#arrow)" d="M330 285 H627"/><text class="txt" x="390" y="260">POST /api/translate · HTTP/JSON</text><text class="txt" x="390" y="278">Authorization: Basic …</text></g>
+  <g><circle class="num" cx="657" cy="335" r="12"/><text class="numtxt" x="657" y="339" text-anchor="middle">3</text><path class="msg" marker-end="url(#arrow)" d="M627 335 H735 V365 H627"/><text class="txt" x="748" y="342">Decode header and constant-time validate</text></g>
+
+  <rect class="frame" x="285" y="395" width="520" height="150"/><path class="alt" d="M285 395 H515 V424 H285 Z"/><text class="alttxt" x="300" y="415">alt · missing or invalid credentials</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M627 465 H330"/><text class="txt" x="395" y="449">401 Unauthorized + WWW-Authenticate: Basic</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M330 510 H130"/><text class="txt" x="155" y="496">Show authentication error</text>
+
+  <rect class="frame" x="285" y="575" width="780" height="235"/><path class="alt" d="M285 575 H470 V604 H285 Z"/><text class="alttxt" x="300" y="595">else · valid credentials</text>
+  <path class="msg" marker-end="url(#arrow)" d="M627 650 H915"/><text class="txt" x="685" y="635">Forward authenticated request</text>
+  <path class="msg" marker-end="url(#arrow)" d="M915 700 H1005 V730 H915"/><text class="txt" x="1020" y="707">Validate request.text</text>
+  <rect class="frame" x="300" y="750" width="745" height="125"/><path class="alt" d="M300 750 H485 V779 H300 Z"/><text class="alttxt" x="315" y="770">alt · missing or blank text</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M915 820 H330"/><text class="txt" x="555" y="805">400 JSON · VALIDATION_ERROR</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M330 855 H130"/><text class="txt" x="160" y="842">Show input error</text>
+
+  <rect class="frame" x="285" y="900" width="1510" height="860"/><path class="alt" d="M285 900 H445 V929 H285 Z"/><text class="alttxt" x="300" y="920">else · valid text</text>
+  <path class="msg" marker-end="url(#arrow)" d="M915 965 H1177"/><text class="txt" x="955" y="940">new GeminiTranslationClient()</text><text class="txt" x="955" y="958">translate(text, sourceLanguage)</text>
+  <path class="msg" marker-end="url(#arrow)" d="M1177 1015 H1445"/><text class="txt" x="1250" y="1000">fromEnvironment()</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1445 1060 H1177"/><text class="txt" x="1195" y="1045">base URI, model, private key, timeout</text>
+  <g transform="translate(1320 1082)"><path class="note" d="M0 0 H300 V76 H0 Z M270 0 V28 H300"/><text class="small" x="14" y="24">GEMINI_API_KEY exists only in the backend process.</text><text class="small" x="14" y="47">It is never included in a client response.</text></g>
+  <path class="msg" marker-end="url(#arrow)" d="M1177 1190 H1682"/><text class="txt" x="1290" y="1155">HTTPS POST /v1beta/models/{model}:generateContent</text><text class="txt" x="1290" y="1175">JSON + x-goog-api-key: server-side key</text>
+
+  <line class="divider" x1="285" y1="1225" x2="1795" y2="1225"/><path class="alt" d="M285 1225 H565 V1254 H285 Z"/><text class="alttxt" x="300" y="1245">alt · usable Gemini translation</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1682 1280 H1177"/><text class="txt" x="1305" y="1265">2xx JSON candidates[].content.parts[].text</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1177 1320 H915"/><text class="txt" x="990" y="1305">translated text</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M915 1360 H330"/><text class="txt" x="555" y="1345">200 JSON · translation + language/model metadata</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M330 1400 H130"/><text class="txt" x="155" y="1385">Display RTL Darija</text>
+
+  <line class="divider" x1="285" y1="1425" x2="1795" y2="1425"/><path class="alt" d="M285 1425 H710 V1454 H285 Z"/><text class="alttxt" x="300" y="1445">else · provider rejection / unavailable / empty / misconfigured</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1682 1480 H1177"/><text class="txt" x="1280" y="1465">Non-2xx / unusable response / I/O failure</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1177 1515 H915"/><text class="txt" x="930" y="1500">TranslationProviderException</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M915 1550 H330"/><text class="txt" x="565" y="1535">502 or 503 JSON provider error</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M330 1580 H130"/><text class="txt" x="155" y="1566">Show provider error</text>
+
+  <line class="divider" x1="285" y1="1610" x2="1795" y2="1610"/><path class="alt" d="M285 1610 H490 V1639 H285 Z"/><text class="alttxt" x="300" y="1630">else · provider timeout</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1682 1660 H1177"/><text class="txt" x="1400" y="1645">Timeout</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M1177 1695 H915"/><text class="txt" x="930" y="1680">TranslationProviderException(TIMEOUT)</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M915 1730 H330"/><text class="txt" x="555" y="1715">504 JSON · PROVIDER_TIMEOUT</text>
+  <path class="reply" marker-end="url(#openarrow)" d="M330 1760 H130"/><text class="txt" x="155" y="1746">Show timeout error</text>
+</svg>

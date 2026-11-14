@@ -1,0 +1,56 @@
+@startuml
+title Authenticated Translation — Sequence Diagram
+autonumber
+skinparam responseMessageBelowArrow true
+
+actor User
+participant "Client\n(Python / PHP / Chrome / Expo)" as Client
+participant "Open Liberty + Jakarta Authentication\nBasicAuthenticationModule" as Auth
+participant "TranslatorResource" as Resource
+participant "GeminiTranslationClient" as GeminiClient
+participant "ProviderConfiguration /\nprocess environment" as Config
+participant "Google Gemini API" as Gemini
+
+User -> Client: Enter text and backend username/password
+Client -> Auth: POST /api/translate\nHTTP/JSON + Authorization: Basic …
+Auth -> Auth: Decode and constant-time validate credentials
+
+alt Missing or invalid credentials
+  Auth --> Client: 401 Unauthorized\nWWW-Authenticate: Basic
+  Client --> User: Show authentication error
+else Valid credentials
+  Auth -> Resource: Forward authenticated request
+  Resource -> Resource: Validate request.text
+
+  alt Missing or blank text
+    Resource --> Client: 400 Bad Request\nJSON VALIDATION_ERROR
+    Client --> User: Show input error
+  else Valid text
+    Resource -> GeminiClient: new GeminiTranslationClient()\ntranslate(text, sourceLanguage)
+    GeminiClient -> Config: fromEnvironment()
+    Config --> GeminiClient: API base URI, model, server-side key, timeout
+    note right of Config
+      GEMINI_API_KEY exists only in the backend process.
+      It is never included in the client response.
+    end note
+    GeminiClient -> Gemini: HTTPS POST /v1beta/models/{model}:generateContent\nContent-Type: application/json\nx-goog-api-key: server-side key
+
+    alt Gemini returns a usable translation
+      Gemini --> GeminiClient: 2xx JSON candidates[].content.parts[].text
+      GeminiClient --> Resource: translated text
+      Resource --> Client: 200 OK JSON\ntranslation + language/model metadata
+      Client --> User: Display right-to-left Darija
+    else Provider rejection, unavailable, empty, or misconfigured
+      Gemini --> GeminiClient: Non-2xx / unusable response / I/O failure
+      GeminiClient --> Resource: TranslationProviderException
+      Resource --> Client: 502 or 503 JSON provider error
+      Client --> User: Show provider error
+    else Provider timeout
+      Gemini --> GeminiClient: Timeout
+      GeminiClient --> Resource: TranslationProviderException(TIMEOUT)
+      Resource --> Client: 504 JSON PROVIDER_TIMEOUT
+      Client --> User: Show timeout error
+    end
+  end
+end
+@enduml

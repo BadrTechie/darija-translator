@@ -5,7 +5,7 @@ Have the backend already running, Chrome open on a sample page, a PowerShell win
 ## 0:00–0:35 — Goal and architecture
 
 - State: “One authenticated Java 17 backend translates submitted material into Moroccan Darija in Arabic script for four clients.”
-- Show `docs/uml/deployment-diagram.svg`.
+- Show `docs/uml/deployment-diagram.svg`, then briefly trace the normal request in `docs/uml/translation-sequence.svg`.
 - Point out that only the backend holds `GEMINI_API_KEY`; clients use Basic auth and all read `translation`.
 
 ## 0:35–1:35 — Backend source
