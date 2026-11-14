@@ -1,6 +1,19 @@
 # Five-minute demo script
 
-Have the backend already running, Chrome open on a sample page, a PowerShell window in the Python client folder, and the mobile app open in the emulator. Keep secrets outside the recording frame.
+Have the backend already running, Chrome open on a sample page, a PowerShell window in the Python client folder, and the physical iPhone ready with Expo Go SDK 58. The iPhone and laptop must be connected to the same Wi-Fi. Keep API keys, passwords, secure prompts, authentication headers, and all other secrets outside the recording frame.
+
+## Pre-recording checklist
+
+- Liberty already running
+- Gemini key and passwords entered before recording
+- Health response ready
+- UML SVG tabs ready
+- Source files ready in the IDE
+- Python and PHP clients ready
+- Chrome extension loaded
+- iPhone Expo app ready
+- GitHub page ready
+- No secrets visible
 
 ## 0:00–0:35 — Goal and architecture
 
@@ -33,14 +46,15 @@ Have the backend already running, Chrome open on a sample page, a PowerShell win
 - Show that the side panel opens alongside the page, the selection appears automatically, and loading changes to the translation.
 - Briefly show `manifest.json` (`manifest_version: 3`, context menu, side panel, storage) and `service-worker.js` selection transfer.
 
-## 3:50–4:30 — React Native
+## 3:50–4:30 — React Native on physical iPhone
 
-- Show backend URL `10.0.2.2:9080` in the Android emulator.
-- Enter text and tap **Translate to Darija**; point out loading indicator, Arabic result, and then intentionally blank input or stop backend briefly to demonstrate the error state.
-- Mention physical phones use the PC’s LAN IP and same Wi-Fi.
+- Show the app on the physical iPhone in Expo Go SDK 58, with backend URL `http://<CURRENT-PC-WIFI-IP>:9080` and the password masked.
+- Enter English text, tap **Translate to Darija**, and show the readable right-to-left Darija result while the backend remains running.
+- Mention that the password is runtime-only and `GEMINI_API_KEY` stays in the Java backend; do not expose either credential or any authentication header.
+- If live iPhone mirroring is unavailable, insert a short iPhone screen recording into the desktop recording for this segment.
 
 ## 4:30–5:00 — Design and submission close
 
 - Show `docs/uml/class-diagram.svg` and name the resource, client, configuration, and exception responsibilities.
-- Show the ZIP contents: source, `mvnw`/`mvnw.cmd`, clients, diagrams, README, and docs; point out absent secrets, `target`, `node_modules`, and keystores.
-- Close with the GitHub repository link and state that the separate five-minute screen recording is the remaining submitted artifact.
+- Briefly show the public repository contents: source, `mvnw`/`mvnw.cmd`, clients, diagrams, README, and docs; point out absent secrets, `target`, `node_modules`, and keystores.
+- Close by stating that the GitHub repository is already publicly available at <https://github.com/BadrTechie/darija-translator>.
